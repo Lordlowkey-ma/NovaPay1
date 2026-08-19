@@ -48,14 +48,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =========================================
-     CHECK REQUIRED ELEMENTS
+     REQUIRED ELEMENT CHECK
   ========================================= */
 
   if (
     !form ||
     !stepOne ||
     !stepTwo ||
-    !continueButton
+    !continueButton ||
+    !username ||
+    !email ||
+    !password ||
+    !confirmPassword ||
+    !terms
   ) {
     console.error(
       "NovaPay registration elements are missing."
@@ -115,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =========================================
-     STEP 1 → STEP 2
+     STEP ONE VALIDATION
   ========================================= */
 
   continueButton.addEventListener(
@@ -127,11 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
       let valid = true;
 
 
-      /* Username */
-
       const usernameValue =
         username.value.trim();
 
+
+      /* Username */
 
       if (usernameValue === "") {
 
@@ -144,6 +149,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         usernameError.textContent =
           "Username must be at least 3 characters.";
+
+        valid = false;
+
+      } else if (usernameValue.length > 20) {
+
+        usernameError.textContent =
+          "Username must not exceed 20 characters.";
 
         valid = false;
 
@@ -162,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
       /* Email */
 
       const emailValue =
-        email.value.trim();
+        email.value.trim().toLowerCase();
 
       const emailPattern =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -175,7 +187,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         valid = false;
 
-      } else if (!emailPattern.test(emailValue)) {
+      } else if (
+        emailValue.length > 254
+      ) {
+
+        emailError.textContent =
+          "Email address is too long.";
+
+        valid = false;
+
+      } else if (
+        !emailPattern.test(emailValue)
+      ) {
 
         emailError.textContent =
           "Please enter a valid email address.";
@@ -185,14 +208,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
 
-      /* Stop if invalid */
-
       if (!valid) {
         return;
       }
 
 
-      /* Move to Step 2 */
+      /* =========================================
+         MOVE TO STEP TWO
+      ========================================= */
 
       continueButton.disabled = true;
 
@@ -295,7 +318,17 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
 
-      /* Confirm Password */
+      if (password.value.length > 128) {
+
+        passwordError.textContent =
+          "Password is too long.";
+
+        valid = false;
+
+      }
+
+
+      /* Confirm password */
 
       if (confirmPassword.value === "") {
 
@@ -328,15 +361,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
 
-      /* Stop if invalid */
-
       if (!valid) {
         return;
       }
 
 
       /* =========================================
-         PREPARE REGISTRATION
+         CLEAN VALUES
       ========================================= */
 
       const usernameValue =
@@ -349,6 +380,10 @@ document.addEventListener("DOMContentLoaded", function () {
         password.value;
 
 
+      /* =========================================
+         REGISTER BUTTON
+      ========================================= */
+
       const registerButton =
         form.querySelector(
           'button[type="submit"]'
@@ -360,10 +395,6 @@ document.addEventListener("DOMContentLoaded", function () {
           ? registerButton.textContent
           : "Register";
 
-
-      /* =========================================
-         LOADING STATE
-      ========================================= */
 
       if (registerButton) {
 
@@ -394,7 +425,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         /* =========================================
-           SAVE USERNAME TO FIREBASE PROFILE
+           SAVE USERNAME
         ========================================= */
 
         await updateProfile(
@@ -406,10 +437,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         /* =========================================
+           VERIFICATION EMAIL SETTINGS
+        ========================================= */
+
+        const actionCodeSettings = {
+
+          url:
+            "https://lordlowkey-ma.github.io/NovaPay1/login.html",
+
+          handleCodeInApp: true
+
+        };
+
+
+        /* =========================================
            SEND VERIFICATION EMAIL
         ========================================= */
 
-        await sendEmailVerification(user);
+        await sendEmailVerification(
+          user,
+          actionCodeSettings
+        );
 
 
         /* =========================================
@@ -434,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         console.log(
-          "NovaPay account created successfully."
+          "NovaPay registration successful."
         );
 
 
@@ -446,10 +494,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
 
-        /* =========================================
-           RESTORE BUTTON
-        ========================================= */
-
         if (registerButton) {
 
           registerButton.disabled = false;
@@ -459,10 +503,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        /* =========================================
-           FIREBASE ERROR MESSAGES
-        ========================================= */
 
         let message =
           "We couldn't create your account. Please try again.";
@@ -499,6 +539,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
           message =
             "Network error. Please check your internet connection and try again.";
+
+        } else if (
+          error.code ===
+          "auth/operation-not-allowed"
+        ) {
+
+          message =
+            "Email and password registration is currently unavailable.";
 
         }
 

@@ -1,0 +1,896 @@
+/* ================================
+   NOVAPAY
+   Global Styles
+================================ */
+
+:root {
+  --green: #00c878;
+  --green-dark: #00a963;
+  --green-soft: rgba(0, 200, 120, 0.10);
+
+  --black: #050705;
+  --black-soft: #0b0f0c;
+  --card: #0d120f;
+  --card-border: rgba(255, 255, 255, 0.08);
+
+  --white: #ffffff;
+  --text: #f5f7f6;
+  --muted: #a7afaa;
+
+  --container: 1180px;
+  --radius: 18px;
+}
+
+
+/* ================================
+   Reset
+================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+
+/* ================================
+   Container
+================================ */
+
+.container {
+  width: min(100% - 40px, var(--container));
+  margin: 0 auto;
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(5, 7, 5, 0.88);
+  backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav {
+  height: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+/* Brand */
+
+.brand,
+.footer-brand {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+}
+
+.brand span,
+.footer-brand span {
+  color: var(--green);
+}
+
+
+/* Desktop Navigation */
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+}
+
+.desktop-nav a {
+  color: #aeb6b1;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.desktop-nav a:hover,
+.desktop-nav a.active {
+  color: var(--green);
+}
+
+
+/* Header Actions */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-button,
+.menu-button {
+  border: 0;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.theme-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 20px;
+}
+
+.theme-button:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.login-button,
+.signup-button {
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-button {
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.signup-button {
+  background: var(--green);
+  color: #031008;
+}
+
+.signup-button:hover,
+.primary-button:hover,
+.cta-button:hover {
+  background: var(--green-dark);
+}
+
+
+/* Mobile Menu */
+
+.menu-button {
+  display: none;
+
+  width: 44px;
+  height: 44px;
+
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-button span {
+  width: 20px;
+  height: 2px;
+  background: white;
+  border-radius: 10px;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+
+/* ================================
+   Hero
+================================ */
+
+.hero {
+  min-height: 620px;
+
+  display: flex;
+  align-items: center;
+
+  position: relative;
+
+  background:
+    radial-gradient(
+      circle at 85% 45%,
+      rgba(0, 200, 120, 0.13),
+      transparent 35%
+    );
+}
+
+.hero::after {
+  content: "";
+
+  position: absolute;
+
+  width: 600px;
+  height: 600px;
+
+  right: -300px;
+  top: 80px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(0, 200, 120, 0.15);
+
+  box-shadow:
+    0 0 80px rgba(0, 200, 120, 0.08);
+
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-text {
+  max-width: 700px;
+}
+
+
+/* Trust badge */
+
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 15px;
+
+  background: var(--green-soft);
+  border: 1px solid rgba(0, 200, 120, 0.18);
+
+  border-radius: 100px;
+
+  color: var(--green);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  margin-bottom: 28px;
+}
+
+.trust-badge span {
+  font-size: 17px;
+}
+
+
+/* Hero heading */
+
+.hero h1 {
+  font-size: clamp(48px, 7vw, 82px);
+  line-height: 0.98;
+  letter-spacing: -4px;
+  font-weight: 800;
+
+  max-width: 760px;
+}
+
+.hero h1 span {
+  color: var(--green);
+}
+
+.hero-text > p {
+  margin-top: 28px;
+
+  max-width: 590px;
+
+  color: var(--muted);
+
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+
+/* Buttons */
+
+.hero-actions {
+  margin-top: 32px;
+}
+
+.primary-button,
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  padding: 15px 24px;
+
+  background: var(--green);
+  color: #031008;
+
+  border-radius: 11px;
+
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.primary-button span {
+  font-size: 20px;
+}
+
+.login-text {
+  margin-top: 17px !important;
+
+  font-size: 14px !important;
+  color: var(--muted) !important;
+}
+
+.login-text a {
+  color: var(--green);
+  font-weight: 600;
+}
+
+
+/* ================================
+   Section Headings
+================================ */
+
+.services-section,
+.why-section {
+  padding: 100px 0;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 55px;
+}
+
+.section-heading > span {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.section-heading h2 {
+  margin-top: 10px;
+
+  font-size: clamp(32px, 5vw, 48px);
+  letter-spacing: -2px;
+}
+
+.section-heading p {
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+
+/* ================================
+   Services
+================================ */
+
+.services-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  border-top: 1px solid var(--card-border);
+  border-left: 1px solid var(--card-border);
+}
+
+.service-item {
+  padding: 30px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+
+  min-height: 145px;
+
+  border-right: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+
+  transition: 0.25s ease;
+}
+
+.service-item:hover {
+  background: rgba(0, 200, 120, 0.04);
+}
+
+.service-icon {
+  min-width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 13px;
+
+  background: var(--green-soft);
+
+  color: var(--green);
+
+  font-size: 24px;
+}
+
+.service-item h3 {
+  font-size: 17px;
+}
+
+.service-item p {
+  margin-top: 5px;
+
+  color: var(--muted);
+  font-size: 14px;
+}
+
+
+/* ================================
+   Why NovaPay
+================================ */
+
+.why-section {
+  background: #080c09;
+}
+
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.benefit {
+  padding: 30px;
+
+  text-align: center;
+
+  border-right: 1px solid var(--card-border);
+}
+
+.benefit:last-child {
+  border-right: 0;
+}
+
+.benefit-icon {
+  width: 52px;
+  height: 52px;
+
+  margin: 0 auto 20px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: var(--green-soft);
+
+  color: var(--green);
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.benefit h3 {
+  font-size: 17px;
+}
+
+.benefit p {
+  margin-top: 8px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+
+/* ================================
+   CTA
+================================ */
+
+.cta-section {
+  padding: 100px 0;
+}
+
+.cta-box {
+  position: relative;
+  overflow: hidden;
+
+  padding: 70px 30px;
+
+  text-align: center;
+
+  background:
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(0, 200, 120, 0.20),
+      transparent 55%
+    ),
+    #0b100d;
+
+  border: 1px solid rgba(0, 200, 120, 0.16);
+
+  border-radius: 25px;
+}
+
+.cta-box > span {
+  color: var(--green);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.cta-box h2 {
+  margin-top: 12px;
+
+  font-size: clamp(34px, 5vw, 52px);
+  letter-spacing: -2px;
+}
+
+.cta-box p {
+  max-width: 580px;
+
+  margin: 15px auto 30px;
+
+  color: var(--muted);
+}
+
+.cta-button {
+  padding: 15px 28px;
+}
+
+
+/* ================================
+   Footer
+================================ */
+
+.footer {
+  padding: 55px 0 25px;
+
+  background: #030403;
+
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.footer-tagline {
+  margin-top: 10px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+.footer-links {
+  display: grid;
+
+  grid-template-columns: repeat(2, auto);
+
+  gap: 14px 50px;
+}
+
+.footer-links a {
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  color: var(--green);
+}
+
+.footer-bottom {
+  margin-top: 40px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid rgba(255,255,255,0.07);
+
+  color: #707873;
+
+  font-size: 13px;
+}
+
+
+/* ================================
+   Light Mode
+================================ */
+
+body.light {
+  --black: #f8faf9;
+  --black-soft: #ffffff;
+  --card: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.09);
+
+  --white: #07100b;
+  --text: #07100b;
+  --muted: #65706a;
+
+  background: #f8faf9;
+  color: #07100b;
+}
+
+body.light .header {
+  background: rgba(248, 250, 249, 0.90);
+  border-bottom-color: rgba(0,0,0,0.07);
+}
+
+body.light .desktop-nav a {
+  color: #65706a;
+}
+
+body.light .desktop-nav a.active,
+body.light .desktop-nav a:hover {
+  color: var(--green-dark);
+}
+
+body.light .login-button {
+  border-color: rgba(0,0,0,0.10);
+}
+
+body.light .theme-button {
+  color: #07100b;
+}
+
+body.light .menu-button {
+  border-color: rgba(0,0,0,0.10);
+}
+
+body.light .menu-button span {
+  background: #07100b;
+}
+
+body.light .services-section {
+  background: #ffffff;
+}
+
+body.light .why-section {
+  background: #eef4f0;
+}
+
+body.light .footer {
+  background: #07100b;
+  color: white;
+}
+
+body.light .footer-brand {
+  color: white;
+}
+
+body.light .footer-links a {
+  color: #a9b3ad;
+}
+
+body.light .footer-bottom {
+  border-color: rgba(255,255,255,0.10);
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 800px) {
+
+  .container {
+    width: min(100% - 32px, var(--container));
+  }
+
+  .nav {
+    height: 68px;
+  }
+
+  .desktop-nav,
+  .login-button,
+  .signup-button {
+    display: none;
+  }
+
+  .nav-actions {
+    margin-left: auto;
+  }
+
+  .menu-button {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: none;
+
+    padding: 15px 16px 22px;
+
+    background: rgba(5, 7, 5, 0.98);
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .mobile-menu.open {
+    display: grid;
+    gap: 4px;
+  }
+
+  .mobile-menu a {
+    padding: 13px 10px;
+
+    color: var(--muted);
+
+    border-radius: 9px;
+  }
+
+  .mobile-menu a:hover {
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .mobile-login,
+  .mobile-signup {
+    margin-top: 5px;
+  }
+
+  .mobile-signup {
+    background: var(--green);
+    color: #031008 !important;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 90px 0 80px;
+  }
+
+  .hero::after {
+    width: 400px;
+    height: 400px;
+
+    right: -250px;
+    top: 100px;
+  }
+
+  .hero-text {
+    max-width: 100%;
+  }
+
+  .trust-badge {
+    margin-bottom: 22px;
+    font-size: 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(45px, 14vw, 68px);
+    letter-spacing: -3px;
+  }
+
+  .hero-text > p {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+
+  .login-text {
+    text-align: center;
+  }
+
+  .services-section,
+  .why-section,
+  .cta-section {
+    padding: 75px 0;
+  }
+
+  .section-heading {
+    margin-bottom: 35px;
+  }
+
+  .section-heading h2 {
+    font-size: 34px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-item {
+    min-height: 110px;
+    padding: 22px;
+  }
+
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit {
+    padding: 30px 10px;
+
+    border-right: 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .benefit:last-child {
+    border-bottom: 0;
+  }
+
+  .cta-box {
+    padding: 55px 22px;
+    border-radius: 20px;
+  }
+
+  .cta-box h2 {
+    font-size: 35px;
+  }
+
+  .cta-button {
+    width: 100%;
+  }
+
+  .footer {
+    padding-top: 45px;
+  }
+
+  .footer-top {
+    display: block;
+  }
+
+  .footer-links {
+    margin-top: 35px;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px 20px;
+  }
+
+}
+
+
+/* Smaller phones */
+
+@media (max-width: 380px) {
+
+  .container {
+    width: min(100% - 24px, var(--container));
+  }
+
+  .hero {
+    padding-top: 70px;
+  }
+
+  .hero h1 {
+    font-size: 43px;
+  }
+
+  .service-item {
+    padding: 18px;
+  }
+
+}

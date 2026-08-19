@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Get your NovaPay account for free."
+  >
+
+  <title>Register — NovaPay</title>
+
+  <link rel="stylesheet" href="register.css">
+</head>
+
+<body class="register-page">
+
+  <!-- Header -->
+  <header class="register-header">
+    <div class="register-nav">
+
+      <a href="register.html" class="register-brand">
+        Nova<span>Pay</span>
+      </a>
+
+      <div class="register-header-actions">
+
+        <button
+          type="button"
+          class="register-theme"
+          id="registerTheme"
+          aria-label="Toggle theme"
+        >
+          ☾
+        </button>
+
+        <a href="#" class="register-login">
+          Login
+        </a>
+
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- Registration -->
+  <main class="register-main">
+
+    <div class="register-container">
+
+      <!-- Intro -->
+      <div class="register-intro">
+
+        <div class="register-icon" id="registerIcon">
+          <span>♙</span>
+        </div>
+
+        <div class="register-step" id="registerStep">
+          STEP 1
+        </div>
+
+        <h1>
+          Get your<br>
+          <span>NovaPay</span><br>
+          account for free
+        </h1>
+
+        <p>
+          Join NovaPay and enjoy fast, secure and reliable
+          everyday payments.
+        </p>
+
+      </div>
+
+
+      <!-- Form -->
+      <form
+        class="register-form"
+        id="registerForm"
+        novalidate
+      >
+
+        <!-- STEP 1 -->
+        <div
+          class="register-step-one"
+          id="registerStepOne"
+        >
+
+          <div class="register-field">
+
+            <label for="username">
+              Username
+            </label>
+
+            <div class="register-input-wrapper">
+
+              <span class="input-icon">♙</span>
+
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+              >
+
+            </div>
+
+            <small
+              class="register-error"
+              id="usernameError"
+            ></small>
+
+          </div>
+
+
+          <div class="register-field">
+
+            <label for="email">
+              Email
+            </label>
+
+            <div class="register-input-wrapper">
+
+              <span class="input-icon">✉</span>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                required
+              >
+
+            </div>
+
+            <small
+              class="register-error"
+              id="emailError"
+            ></small>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="register-button"
+            id="continueButton"
+          >
+            <span>Continue</span>
+            <span>→</span>
+          </button>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+        <div
+          class="register-step-two"
+          id="registerStepTwo"
+          hidden
+        >
+
+          <div class="register-field">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="register-input-wrapper">
+
+              <span class="input-icon">♙</span>
+
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a strong password"
+                autocomplete="new-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="show-password"
+                data-target="password"
+              >
+                Show
+              </button>
+
+            </div>
+
+            <small class="password-hint">
+              Use at least 8 characters with letters,
+              numbers and symbols.
+            </small>
+
+            <small
+              class="register-error"
+              id="passwordError"
+            ></small>
+
+          </div>
+
+
+          <div class="register-field">
+
+            <label for="confirmPassword">
+              Confirm Password
+            </label>
+
+            <div class="register-input-wrapper">
+
+              <span class="input-icon">♙</span>
+
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="show-password"
+                data-target="confirmPassword"
+              >
+                Show
+              </button>
+
+            </div>
+
+            <small
+              class="register-error"
+              id="confirmPasswordError"
+            ></small>
+
+          </div>
+
+
+          <label class="register-terms">
+
+            <input
+              type="checkbox"
+              id="terms"
+              name="terms"
+              required
+            >
+
+            <span>
+              I agree to the
+              <a href="#">Terms & Conditions</a>
+              and
+              <a href="#">Privacy Policy</a>.
+            </span>
+
+          </label>
+
+          <small
+            class="register-error"
+            id="termsError"
+          ></small>
+
+
+          <button
+            type="submit"
+            class="register-button"
+            id="registerButton"
+          >
+            <span>Register</span>
+            <span>→</span>
+          </button>
+
+        </div>
+
+
+        <!-- Login -->
+        <div class="register-login-area">
+
+          <span>Already have an account?</span>
+
+          <a href="#">
+            Login
+          </a>
+
+        </div>
+
+
+        <!-- Security -->
+        <div class="register-security">
+
+          <span>✓</span>
+
+          <p>
+            Your data is protected and secure
+          </p>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+
+  <!-- Footer -->
+  <footer class="register-footer">
+
+    <p>
+      © 2026 NovaPay. All rights reserved.
+    </p>
+
+  </footer>
+
+
+  <script src="register.js"></script>
+
+</body>
+</html>

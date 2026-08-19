@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Login to your NovaPay account."
+  >
+
+  <title>Login — NovaPay</title>
+
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body class="login-page">
+
+  <!-- Header -->
+  <header class="login-header">
+
+    <div class="login-nav">
+
+      <a
+        href="index.html"
+        class="login-brand"
+      >
+        Nova<span>Pay</span>
+      </a>
+
+      <div class="login-header-actions">
+
+        <button
+          type="button"
+          class="login-theme"
+          id="loginTheme"
+          aria-label="Toggle theme"
+        >
+          ☾
+        </button>
+
+        <a
+          href="register.html"
+          class="login-signup"
+        >
+          Sign Up
+        </a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Main -->
+  <main class="login-main">
+
+    <div class="login-container">
+
+      <!-- Intro -->
+      <section class="login-intro">
+
+        <div class="login-icon">
+          <span>♙</span>
+        </div>
+
+        <div class="login-label">
+          WELCOME BACK
+        </div>
+
+        <h1>
+          Welcome back<br>
+          to <span>NovaPay.</span>
+        </h1>
+
+        <p>
+          Login to manage your everyday payments
+          securely in one place.
+        </p>
+
+      </section>
+
+
+      <!-- Login Form -->
+      <form
+        class="login-form"
+        id="loginForm"
+        novalidate
+      >
+
+        <div class="login-form-title">
+
+          <h2>
+            Login
+          </h2>
+
+          <p>
+            Enter your account details to continue.
+          </p>
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="login-field">
+
+          <label for="loginEmail">
+            Email
+          </label>
+
+          <div class="login-input-wrapper">
+
+            <span class="login-input-icon">
+              ✉
+            </span>
+
+            <input
+              type="email"
+              id="loginEmail"
+              name="email"
+              placeholder="Enter your email address"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+          <small
+            class="login-error"
+            id="loginEmailError"
+          ></small>
+
+        </div>
+
+
+        <!-- Password -->
+        <div class="login-field">
+
+          <div class="login-password-heading">
+
+            <label for="loginPassword">
+              Password
+            </label>
+
+            <a
+              href="#"
+              id="forgotPassword"
+            >
+              Forgot password?
+            </a>
+
+          </div>
+
+          <div class="login-input-wrapper">
+
+            <span class="login-input-icon">
+              ♙
+            </span>
+
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              type="button"
+              class="login-show-password"
+              id="loginShowPassword"
+            >
+              Show
+            </button>
+
+          </div>
+
+          <small
+            class="login-error"
+            id="loginPasswordError"
+          ></small>
+
+        </div>
+
+
+        <!-- Login Button -->
+        <button
+          type="submit"
+          class="login-button"
+          id="loginButton"
+        >
+
+          <span>
+            Login
+          </span>
+
+          <span>
+            →
+          </span>
+
+        </button>
+
+
+        <!-- Register -->
+        <div class="login-register-area">
+
+          <span>
+            Don't have an account?
+          </span>
+
+          <a href="register.html">
+            Sign Up
+          </a>
+
+        </div>
+
+
+        <!-- Security -->
+        <div class="login-security">
+
+          <span>✓</span>
+
+          <p>
+            Your account is protected and secure
+          </p>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+
+  <!-- Footer -->
+  <footer class="login-footer">
+
+    <p>
+      © 2026 NovaPay. All rights reserved.
+    </p>
+
+  </footer>
+
+
+  <script src="login.js"></script>
+
+</body>
+</html>

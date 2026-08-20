@@ -424,16 +424,53 @@ document.addEventListener("DOMContentLoaded", function () {
           userCredential.user;
 
 
+        console.log(
+          "NovaPay: Firebase account created.",
+          user.uid
+        );
+
+
         /* =========================================
            SAVE USERNAME
         ========================================= */
 
-        await updateProfile(
-          user,
-          {
-            displayName: usernameValue
+        try {
+
+          await updateProfile(
+            user,
+            {
+              displayName: usernameValue
+            }
+          );
+
+          console.log(
+            "NovaPay: username saved."
+          );
+
+        } catch (profileError) {
+
+          console.error(
+            "NovaPay: username update failed:",
+            profileError
+          );
+
+          alert(
+            "Your NovaPay account was created, " +
+            "but your username could not be saved. " +
+            "Please contact support before continuing."
+          );
+
+          if (registerButton) {
+
+            registerButton.disabled = false;
+
+            registerButton.textContent =
+              originalButtonText;
+
           }
-        );
+
+          return;
+        }
 
 
         /* =========================================
@@ -454,10 +491,41 @@ document.addEventListener("DOMContentLoaded", function () {
            SEND VERIFICATION EMAIL
         ========================================= */
 
-        await sendEmailVerification(
-          user,
-          actionCodeSettings
-        );
+        try {
+
+          await sendEmailVerification(
+            user,
+            actionCodeSettings
+          );
+
+          console.log(
+            "NovaPay: verification email sent."
+          );
+
+        } catch (verificationError) {
+
+          console.error(
+            "NovaPay: verification email failed:",
+            verificationError
+          );
+
+          if (registerButton) {
+
+            registerButton.disabled = false;
+
+            registerButton.textContent =
+              originalButtonText;
+
+          }
+
+          alert(
+            "Your NovaPay account was created successfully, " +
+            "but we could not send the verification email.\n\n" +
+            "Please try again from the login page or contact support."
+          );
+
+          return;
+        }
 
 
         /* =========================================
@@ -482,7 +550,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         console.log(
-          "NovaPay registration successful."
+          "NovaPay registration completed successfully."
         );
 
 
@@ -505,7 +573,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         let message =
-          "We couldn't create your account. Please try again.";
+          "Registration failed.";
 
 
         if (
@@ -547,6 +615,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
           message =
             "Email and password registration is currently unavailable.";
+
+        } else {
+
+          message =
+            "Registration failed: " +
+            (error.message || "Unknown error.");
 
         }
 

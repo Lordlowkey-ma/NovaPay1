@@ -1,6 +1,10 @@
-/* =====================================================
-   NOVAPAY — LOGIN PAGE JAVASCRIPT
-===================================================== */
+import { auth } from "./firebase.js";
+
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -10,140 +14,75 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  const email = document.getElementById("loginEmail");
+  const password = document.getElementById("loginPassword");
 
-  /* =====================================================
-     ELEMENTS
-  ===================================================== */
+  const emailError = document.getElementById("loginEmailError");
+  const passwordError = document.getElementById("loginPasswordError");
 
-  const email =
-    document.getElementById("loginEmail");
-
-  const password =
-    document.getElementById("loginPassword");
-
-  const emailError =
-    document.getElementById("loginEmailError");
-
-  const passwordError =
-    document.getElementById("loginPasswordError");
-
-  const loginButton =
-    document.getElementById("loginButton");
-
-  const showPassword =
-    document.getElementById("loginShowPassword");
-
-  const forgotPassword =
-    document.getElementById("forgotPassword");
-
-  const themeButton =
-    document.getElementById("loginTheme");
+  const loginButton = document.getElementById("loginButton");
+  const showPassword = document.getElementById("loginShowPassword");
+  const forgotPassword = document.getElementById("forgotPassword");
+  const themeButton = document.getElementById("loginTheme");
 
 
-  /* =====================================================
-     SHOW / HIDE PASSWORD
-  ===================================================== */
+  function clearErrors() {
+    emailError.textContent = "";
+    passwordError.textContent = "";
+  }
+
+
+  function validEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+
+  /* SHOW / HIDE PASSWORD */
 
   if (showPassword) {
-
     showPassword.addEventListener("click", function () {
 
       if (password.type === "password") {
-
         password.type = "text";
-
         showPassword.textContent = "Hide";
-
       } else {
-
         password.type = "password";
-
         showPassword.textContent = "Show";
-
       }
 
     });
-
   }
 
 
-  /* =====================================================
-     CLEAR ERRORS
-  ===================================================== */
+  /* LOGIN */
 
-  function clearErrors() {
-
-    emailError.textContent = "";
-    passwordError.textContent = "";
-
-  }
-
-
-  /* =====================================================
-     EMAIL VALIDATION
-  ===================================================== */
-
-  function validEmail(value) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-  }
-
-
-  /* =====================================================
-     LOGIN
-  ===================================================== */
-
-  loginForm.addEventListener("submit", function (event) {
+  loginForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     clearErrors();
 
+    const emailValue = email.value.trim().toLowerCase();
+    const passwordValue = password.value;
+
     let valid = true;
 
-    const emailValue =
-      email.value.trim();
-
-    const passwordValue =
-      password.value;
-
-
-    /* Email */
 
     if (emailValue === "") {
-
-      emailError.textContent =
-        "Please enter your email address.";
-
+      emailError.textContent = "Please enter your email address.";
       valid = false;
-
     } else if (!validEmail(emailValue)) {
-
-      emailError.textContent =
-        "Please enter a valid email address.";
-
+      emailError.textContent = "Please enter a valid email address.";
       valid = false;
-
     }
 
 
-    /* Password */
-
     if (passwordValue === "") {
-
-      passwordError.textContent =
-        "Please enter your password.";
-
+      passwordError.textContent = "Please enter your password.";
       valid = false;
-
     } else if (passwordValue.length < 8) {
-
-      passwordError.textContent =
-        "Password must be at least 8 characters.";
-
+      passwordError.textContent = "Password must be at least 8 characters.";
       valid = false;
-
     }
 
 
@@ -152,54 +91,120 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /* =================================================
-       BACKEND NOT CONNECTED YET
-
-       Firebase Authentication will be connected
-       here later.
-
-       We do NOT store passwords in:
-       - localStorage
-       - sessionStorage
-       - cookies
-       - our database
-    ================================================= */
-
     loginButton.disabled = true;
 
-    loginButton.querySelector("span:first-child").textContent =
-      "Checking...";
+    const buttonText =
+      loginButton.querySelector("span:first-child");
+
+    if (buttonText) {
+      buttonText.textContent = "Checking...";
+    }
 
 
-    setTimeout(function () {
+    try {
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          emailValue,
+          passwordValue
+        );
+
+
+      const user = userCredential.user;
+
+
+      /*
+        Require email verification
+      */
+
+      if (!user.emailVerified) {
+
+        await signOut(auth);
+
+        passwordError.textContent =
+          "Please verify your email address before logging in.";
+
+        loginButton.disabled = false;
+
+        if (buttonText) {
+          buttonText.textContent = "Login";
+        }
+
+        return;
+      }
+
+
+      /*
+        Successful login
+      */
+
+      window.location.href = "dashboard.html";
+
+
+    } catch (error) {
+
+      console.error("NovaPay login error:", error);
+
+      let message =
+        "We couldn't log you in. Please check your details and try again.";
+
+
+      if (error.code === "auth/invalid-credential") {
+        message =
+          "Incorrect email or password.";
+      }
+
+      else if (error.code === "auth/user-not-found") {
+        message =
+          "No NovaPay account was found with this email.";
+      }
+
+      else if (error.code === "auth/wrong-password") {
+        message =
+          "Incorrect email or password.";
+      }
+
+      else if (error.code === "auth/invalid-email") {
+        message =
+          "Please enter a valid email address.";
+      }
+
+      else if (error.code === "auth/too-many-requests") {
+        message =
+          "Too many login attempts. Please wait and try again.";
+      }
+
+      else if (error.code === "auth/network-request-failed") {
+        message =
+          "Network error. Please check your internet connection.";
+      }
+
+
+      passwordError.textContent = message;
 
       loginButton.disabled = false;
 
-      loginButton.querySelector("span:first-child").textContent =
-        "Login";
+      if (buttonText) {
+        buttonText.textContent = "Login";
+      }
 
-      passwordError.textContent =
-        "Authentication will be connected when the backend is ready.";
-
-    }, 700);
+    }
 
   });
 
 
-  /* =====================================================
-     FORGOT PASSWORD
-  ===================================================== */
+  /* FORGOT PASSWORD */
 
   if (forgotPassword) {
 
-    forgotPassword.addEventListener("click", function (event) {
+    forgotPassword.addEventListener("click", async function (event) {
 
       event.preventDefault();
 
       clearErrors();
 
-      const emailValue =
-        email.value.trim();
+      const emailValue = email.value.trim().toLowerCase();
 
 
       if (emailValue === "") {
@@ -210,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
         email.focus();
 
         return;
-
       }
 
 
@@ -222,26 +226,37 @@ document.addEventListener("DOMContentLoaded", function () {
         email.focus();
 
         return;
-
       }
 
 
-      /*
-        Firebase password-reset email will be connected
-        here later.
-      */
+      try {
 
-      emailError.textContent =
-        "Password reset will be available when authentication is connected.";
+        await sendPasswordResetEmail(
+          auth,
+          emailValue
+        );
+
+        emailError.textContent =
+          "Password reset email sent. Check your inbox.";
+
+      } catch (error) {
+
+        console.error(
+          "NovaPay password reset error:",
+          error
+        );
+
+        emailError.textContent =
+          "We couldn't send the password reset email.";
+
+      }
 
     });
 
   }
 
 
-  /* =====================================================
-     THEME
-  ===================================================== */
+  /* THEME */
 
   if (themeButton) {
 
@@ -279,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   console.log(
-    "NovaPay login frontend loaded successfully."
+    "NovaPay Firebase login loaded successfully."
   );
 
 });

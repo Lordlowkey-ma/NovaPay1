@@ -97,11 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
      Later, when the NovaPay backend is deployed,
      replace this with the real HTTPS backend URL.
      ========================================================= */
-
-  const API_BASE_URL =
-  "https://super-fortnight-vpqvrwpx9x6ghpgj6-3000.app.github.dev";
-
-
+const API_BASE_URL =
+  "https://novapay-backend-1.onrender.com";
+  
   /* =========================================================
      MESSAGE HELPER
      ========================================================= */

@@ -1,326 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-  <meta
-    name="description"
-    content="Get your NovaPay account for free."
-  >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-  <title>Register — NovaPay</title>
+    <title>NovaPay Registration</title>
 
-  <link rel="stylesheet" href="register.css">
+    <link
+        rel="stylesheet"
+        href="register.css"
+    >
 </head>
 
-<body class="register-page">
 
-  <!-- Header -->
-  <header class="register-header">
-    <div class="register-nav">
+<body>
 
-      <a href="register.html" class="register-brand">
-        Nova<span>Pay</span>
-      </a>
+    <main class="register-page">
 
-      <div class="register-header-actions">
-
-        <button
-          type="button"
-          class="register-theme"
-          id="registerTheme"
-          aria-label="Toggle theme"
-        >
-          ☾
-        </button>
-
-        <a href="#" class="register-login">
-          Login
-        </a>
-
-      </div>
-
-    </div>
-  </header>
+        <section class="register-container">
 
 
-  <!-- Registration -->
-  <main class="register-main">
+            <!-- =================================================
+                 HEADER
+                 ================================================= -->
 
-    <div class="register-container">
+            <div class="register-header">
 
-      <!-- Intro -->
-      <div class="register-intro">
+                <h1>NovaPay</h1>
 
-        <div class="register-icon" id="registerIcon">
-          <span>♙</span>
-        </div>
-
-        <div class="register-step" id="registerStep">
-          STEP 1
-        </div>
-
-        <h1>
-          Get your<br>
-          <span>NovaPay</span><br>
-          account for free
-        </h1>
-
-        <p>
-          Join NovaPay and enjoy fast, secure and reliable
-          everyday payments.
-        </p>
-
-      </div>
-
-
-      <!-- Form -->
-      <form
-        class="register-form"
-        id="registerForm"
-        novalidate
-      >
-
-        <!-- STEP 1 -->
-        <div
-          class="register-step-one"
-          id="registerStepOne"
-        >
-
-          <div class="register-field">
-
-            <label for="username">
-              Username
-            </label>
-
-            <div class="register-input-wrapper">
-
-              <span class="input-icon">♙</span>
-
-              <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Enter your username"
-                autocomplete="username"
-                required
-              >
+                <p>
+                    Create your account
+                </p>
 
             </div>
 
-            <small
-              class="register-error"
-              id="usernameError"
-            ></small>
-
-          </div>
 
 
-          <div class="register-field">
+            <!-- =================================================
+                 REGISTRATION FORM
+                 ================================================= -->
 
-            <label for="email">
-              Email
-            </label>
-
-            <div class="register-input-wrapper">
-
-              <span class="input-icon">✉</span>
-
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email address"
-                autocomplete="email"
-                required
-              >
-
-            </div>
-
-            <small
-              class="register-error"
-              id="emailError"
-            ></small>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="register-button"
-            id="continueButton"
-          >
-            <span>Continue</span>
-            <span>→</span>
-          </button>
-
-        </div>
-
-
-        <!-- STEP 2 -->
-        <div
-          class="register-step-two"
-          id="registerStepTwo"
-          hidden
-        >
-
-          <div class="register-field">
-
-            <label for="password">
-              Password
-            </label>
-
-            <div class="register-input-wrapper">
-
-              <span class="input-icon">♙</span>
-
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Create a strong password"
-                autocomplete="new-password"
-                required
-              >
-
-              <button
-                type="button"
-                class="show-password"
-                data-target="password"
-              >
-                Show
-              </button>
-
-            </div>
-
-            <small class="password-hint">
-              Use at least 8 characters with letters,
-              numbers and symbols.
-            </small>
-
-            <small
-              class="register-error"
-              id="passwordError"
-            ></small>
-
-          </div>
-
-
-          <div class="register-field">
-
-            <label for="confirmPassword">
-              Confirm Password
-            </label>
-
-            <div class="register-input-wrapper">
-
-              <span class="input-icon">♙</span>
-
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                autocomplete="new-password"
-                required
-              >
-
-              <button
-                type="button"
-                class="show-password"
-                data-target="confirmPassword"
-              >
-                Show
-              </button>
-
-            </div>
-
-            <small
-              class="register-error"
-              id="confirmPasswordError"
-            ></small>
-
-          </div>
-
-
-          <label class="register-terms">
-
-            <input
-              type="checkbox"
-              id="terms"
-              name="terms"
-              required
+            <form
+                id="registerForm"
+                novalidate
             >
 
-            <span>
-              I agree to the
-              <a href="#">Terms & Conditions</a>
-              and
-              <a href="#">Privacy Policy</a>.
-            </span>
 
-          </label>
+                <!-- =================================================
+                     STEP 1 — USERNAME + PHONE
+                     ================================================= -->
 
-          <small
-            class="register-error"
-            id="termsError"
-          ></small>
+                <div
+                    id="registrationStep1"
+                    class="registration-step"
+                >
 
+                    <div class="form-group">
 
-          <button
-            type="submit"
-            class="register-button"
-            id="registerButton"
-          >
-            <span>Register</span>
-            <span>→</span>
-          </button>
+                        <label for="username">
+                            Username
+                        </label>
 
-        </div>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            maxlength="20"
+                            required
+                        >
 
-
-        <!-- Login -->
-        <div class="register-login-area">
-
-          <span>Already have an account?</span>
-
-          <a href="#">
-            Login
-          </a>
-
-        </div>
+                    </div>
 
 
-        <!-- Security -->
-        <div class="register-security">
 
-          <span>✓</span>
+                    <div class="form-group">
 
-          <p>
-            Your data is protected and secure
-          </p>
+                        <label for="phone">
+                            Phone number
+                        </label>
 
-        </div>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="+2348012345678"
+                            autocomplete="tel"
+                            inputmode="tel"
+                            required
+                        >
 
-      </form>
+                        <small>
+                            Enter your Nigerian phone number
+                            in international format.
+                        </small>
 
-    </div>
-
-  </main>
-
-
-  <!-- Footer -->
-  <footer class="register-footer">
-
-    <p>
-      © 2026 NovaPay. All rights reserved.
-    </p>
-
-  </footer>
+                    </div>
 
 
-  <script type="module" src="register.js"></script>
+
+                    <!-- Firebase Phone Auth reCAPTCHA -->
+
+                    <div
+                        id="recaptcha-container"
+                    ></div>
+
+
+
+                    <button
+                        type="button"
+                        id="sendCodeBtn"
+                    >
+                        Continue
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 2 — PHONE VERIFICATION
+                     ================================================= -->
+
+                <div
+                    id="registrationStep2"
+                    class="registration-step"
+                    hidden
+                >
+
+                    <div class="verification-header">
+
+                        <h2>
+                            Verify your phone
+                        </h2>
+
+                        <p>
+                            Enter the 6-digit verification
+                            code sent to your phone.
+                        </p>
+
+                        <p id="verificationPhone"></p>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="verificationCode">
+                            Verification code
+                        </label>
+
+                        <input
+                            type="text"
+                            id="verificationCode"
+                            name="verificationCode"
+                            placeholder="Enter 6-digit code"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                        >
+
+                    </div>
+
+
+
+                    <button
+                        type="button"
+                        id="verifyCodeBtn"
+                    >
+                        Verify phone
+                    </button>
+
+
+
+                    <button
+                        type="button"
+                        id="resendCodeBtn"
+                    >
+                        Resend code
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 3 — CREATE PASSWORD
+                     ================================================= -->
+
+                <div
+                    id="registrationStep3"
+                    class="registration-step"
+                    hidden
+                >
+
+                    <div class="password-header">
+
+                        <h2>
+                            Create your password
+                        </h2>
+
+                        <p>
+                            Your password will be used
+                            to access your NovaPay account.
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <button
+                        type="submit"
+                        id="createAccountBtn"
+                    >
+                        Create account
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STATUS MESSAGE
+                     ================================================= -->
+
+                <div
+                    id="registerMessage"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+
+            </form>
+
+
+
+            <!-- =================================================
+                 LOGIN LINK
+                 ================================================= -->
+
+            <div class="login-link">
+
+                <p>
+
+                    Already have an account?
+
+                    <a href="login.html">
+                        Log in
+                    </a>
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================================
+         NOVAPAY REGISTRATION JAVASCRIPT
+         ================================================= -->
+
+    <script
+        type="module"
+        src="register.js"
+    ></script>
+
 
 </body>
+
 </html>

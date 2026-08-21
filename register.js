@@ -217,10 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function isValidNigeriaPhone(phoneNumber) {
 
     return /^\+234\d{10}$/.test(phoneNumber);
-  }
-
-
-  /* =========================================================
+  }   /* =========================================================
      PASSWORD VALIDATION
      ========================================================= */
 
@@ -620,9 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
     }
-  );
-
-
+  ); 
   /* =========================================================
      RESEND CODE
      ========================================================= */
@@ -799,26 +794,51 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
 
-        const result =
-          await response.json();
-
+        const responseText =
+          await response.text();
 
         console.log(
-          "NovaPay backend response:",
-          result
+          "NovaPay: Backend HTTP status:",
+          response.status
         );
 
+        console.log(
+          "NovaPay: Backend raw response:",
+          responseText
+        );
+
+        let result;
+
+        try {
+          result = JSON.parse(responseText);
+        } catch (parseError) {
+
+          console.error(
+            "NovaPay: Backend JSON parse error:",
+            parseError
+          );
+
+          throw new Error(
+            `Backend returned invalid JSON. HTTP ${response.status}. Response: ${
+              responseText || "EMPTY RESPONSE"
+            }`
+          );
+        }
+
+        console.log(
+          "NovaPay: Backend parsed response:",
+          result
+        );
 
         if (!response.ok || !result.success) {
 
           throw new Error(
-            result.message ||
-            "NovaPay account creation failed."
+            `Backend error (HTTP ${response.status}): ${
+              result.message ||
+              "No error message returned by backend."
+            }`
           );
-        }
-
-
-        /* =================================================
+        }         /* =================================================
            SUCCESS
            ================================================= */
 
@@ -856,9 +876,18 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        const debugMessage =
+          error && error.message
+            ? error.message
+            : String(error);
+
+        console.error(
+          "NovaPay REGISTRATION FAILURE:",
+          debugMessage
+        );
+
         showMessage(
-          error.message ||
-          "Registration failed. Please try again.",
+          debugMessage,
           "error"
         );
 

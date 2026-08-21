@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -9,7 +10,7 @@
 
   <meta
     name="description"
-    content="Login to your NovaPay account."
+    content="Log in to your NovaPay account."
   >
 
   <title>Login — NovaPay</title>
@@ -19,9 +20,8 @@
 
 <body class="login-page">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header class="login-header">
-
     <div class="login-nav">
 
       <a
@@ -35,8 +35,8 @@
 
         <button
           type="button"
-          class="login-theme"
           id="loginTheme"
+          class="login-theme"
           aria-label="Toggle theme"
         >
           ☾
@@ -52,45 +52,34 @@
       </div>
 
     </div>
-
   </header>
 
 
-  <!-- Main -->
+  <!-- MAIN -->
   <main class="login-main">
 
     <div class="login-container">
 
-      <!-- Intro -->
+      <!-- SIMPLE INTRO -->
       <section class="login-intro">
 
-        <div class="login-icon">
-          <span>♙</span>
-        </div>
-
         <div class="login-label">
-          WELCOME BACK
+          NOVAPAY ACCOUNT
         </div>
 
         <h1>
-          Welcome back<br>
-          to <span>NovaPay.</span>
+          Welcome back.
         </h1>
 
         <p>
-          Login to manage your everyday payments
-          securely in one place.
+          Log in to continue to your NovaPay account.
         </p>
 
       </section>
 
 
-      <!-- Login Form -->
-      <form
-        class="login-form"
-        id="loginForm"
-        novalidate
-      >
+      <!-- LOGIN CARD -->
+      <section class="login-card">
 
         <div class="login-form-title">
 
@@ -99,146 +88,175 @@
           </h2>
 
           <p>
-            Enter your account details to continue.
+            Enter your account details below.
           </p>
 
         </div>
 
 
-        <!-- Email -->
-        <div class="login-field">
+        <!-- LOGIN FORM -->
+        <form
+          id="loginForm"
+          class="login-form"
+          novalidate
+        >
 
-          <label for="loginEmail">
-            Email
-          </label>
+          <!-- PHONE -->
+          <div class="login-field">
 
-          <div class="login-input-wrapper">
+            <label for="loginPhone">
+              Phone number
+            </label>
 
-            <span class="login-input-icon">
-              ✉
-            </span>
+            <div class="login-input-wrapper">
 
-            <input
-              type="email"
-              id="loginEmail"
-              name="email"
-              placeholder="Enter your email address"
-              autocomplete="email"
-              required
-            >
+              <span
+                class="login-input-icon"
+                aria-hidden="true"
+              >
+                +
+              </span>
+
+              <input
+                type="tel"
+                id="loginPhone"
+                name="phone"
+                placeholder="+2348012345678"
+                autocomplete="tel"
+                inputmode="tel"
+                required
+              >
+
+            </div>
+
+            <small
+              id="loginPhoneError"
+              class="login-error"
+            ></small>
 
           </div>
 
-          <small
-            class="login-error"
-            id="loginEmailError"
-          ></small>
 
-        </div>
+          <!-- PASSWORD -->
+          <div class="login-field">
+
+            <div class="login-password-heading">
+
+              <label for="loginPassword">
+                Password
+              </label>
+
+              <button
+                type="button"
+                id="forgotPassword"
+                class="forgot-password"
+              >
+                Forgot password?
+              </button>
+
+            </div>
 
 
-        <!-- Password -->
-        <div class="login-field">
+            <div class="login-input-wrapper">
 
-          <div class="login-password-heading">
+              <span
+                class="login-input-icon"
+                aria-hidden="true"
+              >
+                •
+              </span>
 
-            <label for="loginPassword">
-              Password
-            </label>
+              <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              >
 
-            <a
-              href="#"
-              id="forgotPassword"
-            >
-              Forgot password?
+              <button
+                type="button"
+                id="loginShowPassword"
+                class="login-show-password"
+              >
+                Show
+              </button>
+
+            </div>
+
+            <small
+              id="loginPasswordError"
+              class="login-error"
+            ></small>
+
+          </div>
+
+
+          <!-- GENERAL MESSAGE -->
+          <div
+            id="loginMessage"
+            class="login-message"
+            role="alert"
+            aria-live="polite"
+          ></div>
+
+
+          <!-- LOGIN BUTTON -->
+          <button
+            type="submit"
+            id="loginButton"
+            class="login-button"
+          >
+
+            <span>
+              Login
+            </span>
+
+            <span aria-hidden="true">
+              →
+            </span>
+
+          </button>
+
+
+          <!-- CREATE ACCOUNT -->
+          <div class="login-register-area">
+
+            <span>
+              Don't have an account?
+            </span>
+
+            <a href="register.html">
+              Create one
             </a>
 
           </div>
 
-          <div class="login-input-wrapper">
 
-            <span class="login-input-icon">
-              ♙
+          <!-- SECURITY NOTE -->
+          <div class="login-security">
+
+            <span aria-hidden="true">
+              ✓
             </span>
 
-            <input
-              type="password"
-              id="loginPassword"
-              name="password"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-              required
-            >
-
-            <button
-              type="button"
-              class="login-show-password"
-              id="loginShowPassword"
-            >
-              Show
-            </button>
+            <p>
+              Your NovaPay account is protected with secure authentication.
+            </p>
 
           </div>
 
-          <small
-            class="login-error"
-            id="loginPasswordError"
-          ></small>
+        </form>
 
-        </div>
-
-
-        <!-- Login Button -->
-        <button
-          type="submit"
-          class="login-button"
-          id="loginButton"
-        >
-
-          <span>
-            Login
-          </span>
-
-          <span>
-            →
-          </span>
-
-        </button>
-
-
-        <!-- Register -->
-        <div class="login-register-area">
-
-          <span>
-            Don't have an account?
-          </span>
-
-          <a href="register.html">
-            Sign Up
-          </a>
-
-        </div>
-
-
-        <!-- Security -->
-        <div class="login-security">
-
-          <span>✓</span>
-
-          <p>
-            Your account is protected and secure
-          </p>
-
-        </div>
-
-      </form>
+      </section>
 
     </div>
 
   </main>
 
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer class="login-footer">
 
     <p>
@@ -248,7 +266,11 @@
   </footer>
 
 
-  <script src="login.js"></script>
+  <!-- JAVASCRIPT -->
+  <script
+    type="module"
+    src="login.js"
+  ></script>
 
 </body>
 </html>

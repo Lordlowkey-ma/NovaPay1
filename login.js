@@ -1,300 +1,540 @@
-import { auth } from "./firebase.js";
+/* =========================================================
+   NOVAPAY LOGIN
+   Firebase persistent session
+   ========================================================= */
 
 import {
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut
+    auth
+} from "./firebase.js";
+
+import {
+    signInWithCustomToken,
+    setPersistence,
+    browserLocalPersistence,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-document.addEventListener("DOMContentLoaded", function () {
 
-  const loginForm = document.getElementById("loginForm");
+/* =========================================================
+   API
+   ========================================================= */
 
-  if (!loginForm) {
-    return;
-  }
-
-  const email = document.getElementById("loginEmail");
-  const password = document.getElementById("loginPassword");
-
-  const emailError = document.getElementById("loginEmailError");
-  const passwordError = document.getElementById("loginPasswordError");
-
-  const loginButton = document.getElementById("loginButton");
-  const showPassword = document.getElementById("loginShowPassword");
-  const forgotPassword = document.getElementById("forgotPassword");
-  const themeButton = document.getElementById("loginTheme");
+const API_BASE_URL =
+    "https://novapay-backend-1.onrender.com";
 
 
-  function clearErrors() {
-    emailError.textContent = "";
-    passwordError.textContent = "";
-  }
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const loginPhone =
+    document.getElementById("loginPhone");
+
+const loginPassword =
+    document.getElementById("loginPassword");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const loginPhoneError =
+    document.getElementById("loginPhoneError");
+
+const loginPasswordError =
+    document.getElementById("loginPasswordError");
+
+const loginShowPassword =
+    document.getElementById("loginShowPassword");
+
+const forgotPassword =
+    document.getElementById("forgotPassword");
+
+const loginTheme =
+    document.getElementById("loginTheme");
 
 
-  function validEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showMessage(message, type = "error") {
+
+    if (!loginMessage) {
+        return;
+    }
+
+    loginMessage.textContent =
+        message;
+
+    loginMessage.className =
+        "login-message show";
+
+    if (type === "success") {
+        loginMessage.classList.add("success");
+    }
+
+}
 
 
-  /* SHOW / HIDE PASSWORD */
+function clearMessage() {
 
-  if (showPassword) {
-    showPassword.addEventListener("click", function () {
+    if (!loginMessage) {
+        return;
+    }
 
-      if (password.type === "password") {
-        password.type = "text";
-        showPassword.textContent = "Hide";
-      } else {
-        password.type = "password";
-        showPassword.textContent = "Show";
-      }
+    loginMessage.textContent = "";
 
-    });
-  }
+    loginMessage.className =
+        "login-message";
+
+}
 
 
-  /* LOGIN */
+/* =========================================================
+   ERRORS
+   ========================================================= */
 
-  loginForm.addEventListener("submit", async function (event) {
+function clearErrors() {
 
-    event.preventDefault();
+    if (loginPhoneError) {
+        loginPhoneError.textContent = "";
+    }
 
-    clearErrors();
+    if (loginPasswordError) {
+        loginPasswordError.textContent = "";
+    }
 
-    const emailValue = email.value.trim().toLowerCase();
-    const passwordValue = password.value;
+    clearMessage();
 
-    let valid = true;
+}
 
 
-    if (emailValue === "") {
-      emailError.textContent = "Please enter your email address.";
-      valid = false;
-    } else if (!validEmail(emailValue)) {
-      emailError.textContent = "Please enter a valid email address.";
-      valid = false;
+/* =========================================================
+   PHONE NORMALIZATION
+   ========================================================= */
+
+function normalizePhone(value) {
+
+    let phone =
+        String(value || "")
+            .trim()
+            .replace(/\s+/g, "")
+            .replace(/-/g, "")
+            .replace(/[()]/g, "");
+
+
+    if (
+        phone.startsWith("0") &&
+        phone.length === 11
+    ) {
+
+        phone =
+            "+234" +
+            phone.substring(1);
+
     }
 
 
-    if (passwordValue === "") {
-      passwordError.textContent = "Please enter your password.";
-      valid = false;
-    } else if (passwordValue.length < 8) {
-      passwordError.textContent = "Password must be at least 8 characters.";
-      valid = false;
+    if (
+        phone.startsWith("234") &&
+        !phone.startsWith("+234")
+    ) {
+
+        phone =
+            "+" +
+            phone;
+
     }
 
 
-    if (!valid) {
-      return;
-    }
+    return phone;
+
+}
 
 
-    loginButton.disabled = true;
+/* =========================================================
+   SHOW / HIDE PASSWORD
+   ========================================================= */
 
-    const buttonText =
-      loginButton.querySelector("span:first-child");
+if (loginShowPassword) {
 
-    if (buttonText) {
-      buttonText.textContent = "Checking...";
-    }
+    loginShowPassword.addEventListener(
+        "click",
+        () => {
 
+            if (
+                loginPassword.type ===
+                "password"
+            ) {
 
-    try {
+                loginPassword.type =
+                    "text";
 
-      const userCredential =
-        await signInWithEmailAndPassword(
-          auth,
-          emailValue,
-          passwordValue
-        );
+                loginShowPassword.textContent =
+                    "Hide";
 
+            } else {
 
-      const user = userCredential.user;
+                loginPassword.type =
+                    "password";
 
+                loginShowPassword.textContent =
+                    "Show";
 
-      /*
-        Require email verification
-      */
+            }
 
-      if (!user.emailVerified) {
-
-        await signOut(auth);
-
-        passwordError.textContent =
-          "Please verify your email address before logging in.";
-
-        loginButton.disabled = false;
-
-        if (buttonText) {
-          buttonText.textContent = "Login";
         }
+    );
 
-        return;
-      }
+}
 
 
-      /*
-        Successful login
-      */
+/* =========================================================
+   LOGIN
+   ========================================================= */
 
-      window.location.href = "dashboard.html";
+if (loginForm) {
 
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
 
-    } catch (error) {
+            event.preventDefault();
 
-      console.error("NovaPay login error:", error);
+            clearErrors();
 
-      let message =
-        "We couldn't log you in. Please check your details and try again.";
 
+            const phone =
+                normalizePhone(
+                    loginPhone.value
+                );
 
-      if (error.code === "auth/invalid-credential") {
-        message =
-          "Incorrect email or password.";
-      }
+            const password =
+                loginPassword.value;
 
-      else if (error.code === "auth/user-not-found") {
-        message =
-          "No NovaPay account was found with this email.";
-      }
 
-      else if (error.code === "auth/wrong-password") {
-        message =
-          "Incorrect email or password.";
-      }
+            /* ---------------------------------------------
+               VALIDATION
+            --------------------------------------------- */
 
-      else if (error.code === "auth/invalid-email") {
-        message =
-          "Please enter a valid email address.";
-      }
+            if (!phone) {
 
-      else if (error.code === "auth/too-many-requests") {
-        message =
-          "Too many login attempts. Please wait and try again.";
-      }
+                loginPhoneError.textContent =
+                    "Please enter your phone number.";
 
-      else if (error.code === "auth/network-request-failed") {
-        message =
-          "Network error. Please check your internet connection.";
-      }
+                loginPhone.focus();
 
+                return;
 
-      passwordError.textContent = message;
+            }
 
-      loginButton.disabled = false;
 
-      if (buttonText) {
-        buttonText.textContent = "Login";
-      }
+            if (!password) {
 
-    }
+                loginPasswordError.textContent =
+                    "Please enter your password.";
 
-  });
+                loginPassword.focus();
 
+                return;
 
-  /* FORGOT PASSWORD */
+            }
 
-  if (forgotPassword) {
 
-    forgotPassword.addEventListener("click", async function (event) {
+            if (password.length < 8) {
 
-      event.preventDefault();
+                loginPasswordError.textContent =
+                    "Password must be at least 8 characters.";
 
-      clearErrors();
+                loginPassword.focus();
 
-      const emailValue = email.value.trim().toLowerCase();
+                return;
 
+            }
 
-      if (emailValue === "") {
 
-        emailError.textContent =
-          "Enter your email first.";
+            /* ---------------------------------------------
+               BUTTON
+            --------------------------------------------- */
 
-        email.focus();
+            loginButton.disabled = true;
 
-        return;
-      }
+            const originalButton =
+                loginButton.innerHTML;
 
+            loginButton.innerHTML =
+                "<span>Logging in...</span>";
 
-      if (!validEmail(emailValue)) {
 
-        emailError.textContent =
-          "Please enter a valid email address.";
+            try {
 
-        email.focus();
+                /* -----------------------------------------
+                   REQUEST BACKEND LOGIN
+                ----------------------------------------- */
 
-        return;
-      }
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/login`,
+                        {
+                            method: "POST",
 
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-      try {
+                            body: JSON.stringify({
+                                phone: phone,
+                                password: password
+                            })
+                        }
+                    );
 
-        await sendPasswordResetEmail(
-          auth,
-          emailValue
-        );
 
-        emailError.textContent =
-          "Password reset email sent. Check your inbox.";
+                const responseText =
+                    await response.text();
 
-      } catch (error) {
 
-        console.error(
-          "NovaPay password reset error:",
-          error
-        );
+                let result;
 
-        emailError.textContent =
-          "We couldn't send the password reset email.";
 
-      }
+                try {
 
-    });
+                    result =
+                        responseText
+                            ? JSON.parse(responseText)
+                            : {};
 
-  }
+                } catch (error) {
 
+                    console.error(
+                        "NovaPay login invalid response:",
+                        responseText
+                    );
 
-  /* THEME */
+                    throw new Error(
+                        `Server returned an invalid response (${response.status}).`
+                    );
 
-  if (themeButton) {
+                }
 
-    themeButton.addEventListener("click", function () {
 
-      document.body.classList.toggle("light");
+                console.log(
+                    "NovaPay login response:",
+                    result
+                );
 
-      const isLight =
-        document.body.classList.contains("light");
 
-      themeButton.textContent =
-        isLight ? "☀" : "☾";
+                if (!response.ok) {
 
-      localStorage.setItem(
-        "novapay-theme",
-        isLight ? "light" : "dark"
-      );
+                    throw new Error(
+                        result.message ||
+                        result.error ||
+                        `Login failed (${response.status}).`
+                    );
 
-    });
+                }
 
 
-    const savedTheme =
-      localStorage.getItem("novapay-theme");
+                if (!result.success) {
 
+                    throw new Error(
+                        result.message ||
+                        "Login failed."
+                    );
 
-    if (savedTheme === "light") {
+                }
 
-      document.body.classList.add("light");
 
-      themeButton.textContent = "☀";
+                if (!result.token) {
 
-    }
+                    throw new Error(
+                        "Login succeeded but no authentication token was returned."
+                    );
 
-  }
+                }
 
 
-  console.log(
-    "NovaPay Firebase login loaded successfully."
-  );
+                /* -----------------------------------------
+                   PERSIST FIREBASE AUTH SESSION
+                ----------------------------------------- */
 
-});
+                await setPersistence(
+                    auth,
+                    browserLocalPersistence
+                );
+
+
+                /* -----------------------------------------
+                   SIGN INTO FIREBASE
+                ----------------------------------------- */
+
+                const userCredential =
+                    await signInWithCustomToken(
+                        auth,
+                        result.token
+                    );
+
+
+                const firebaseUser =
+                    userCredential.user;
+
+
+                console.log(
+                    "NovaPay Firebase session established:",
+                    firebaseUser.uid
+                );
+
+
+                /* -----------------------------------------
+                   VERIFY SESSION
+                ----------------------------------------- */
+
+                if (
+                    firebaseUser.uid !==
+                    result.user.uid
+                ) {
+
+                    await signOut(auth);
+
+                    throw new Error(
+                        "The authentication session could not be verified."
+                    );
+
+                }
+
+
+                /* -----------------------------------------
+                   SAVE SAFE USER PROFILE
+                   
+                   This is NOT authentication.
+                   Firebase is the authentication source.
+                ----------------------------------------- */
+
+                if (result.user) {
+
+                    localStorage.setItem(
+                        "novapay_user",
+                        JSON.stringify(
+                            result.user
+                        )
+                    );
+
+                }
+
+
+                /* -----------------------------------------
+                   SUCCESS
+                ----------------------------------------- */
+
+                showMessage(
+                    "Login successful. Redirecting...",
+                    "success"
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    },
+                    500
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "NovaPay login error:",
+                    error
+                );
+
+
+                showMessage(
+                    error.message ||
+                    "Unable to log in right now."
+                );
+
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.innerHTML =
+                    originalButton;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+if (forgotPassword) {
+
+    forgotPassword.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "forgot-password.html";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+if (loginTheme) {
+
+    loginTheme.addEventListener(
+        "click",
+        () => {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const isLight =
+                document.body.classList.contains(
+                    "light-mode"
+                );
+
+
+            loginTheme.textContent =
+                isLight ? "☀" : "☾";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
+console.log(
+    "NovaPay login loaded."
+);
+
+console.log(
+    "NovaPay API:",
+    API_BASE_URL
+);

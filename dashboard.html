@@ -1,127 +1,527 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
-  <title>Dashboard — NovaPay</title>
+    <meta
+        name="theme-color"
+        content="#07100D"
+    >
 
-  <link rel="stylesheet" href="dashboard.css">
+    <title>NovaPay Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 
-<body class="dashboard-page">
+<body>
 
-  <header class="dashboard-header">
+    <div class="novapay-dashboard">
 
-    <a href="index.html" class="dashboard-brand">
-      Nova<span>Pay</span>
-    </a>
+        <!-- =========================================
+             HEADER
+        ========================================== -->
 
-    <button
-      type="button"
-      id="dashboardTheme"
-      class="dashboard-theme"
-    >
-      ☾
-    </button>
+        <header class="dashboard-header">
 
-  </header>
+            <div class="profile-greeting">
 
+                <div
+                    class="profile-avatar"
+                    id="profileAvatar"
+                    aria-label="Profile"
+                >
+                    <span id="profileInitial">N</span>
+                </div>
 
-  <main class="dashboard-main">
+                <div class="greeting">
+                    <span>Hi,</span>
 
-    <section class="dashboard-welcome">
+                    <strong id="username">
+                        User
+                    </strong>
+                </div>
 
-      <span class="dashboard-label">
-        NOVAPAY DASHBOARD
-      </span>
-
-      <h1>
-        Welcome to<br>
-        <span>NovaPay.</span>
-      </h1>
-
-      <p>
-        Your account dashboard is ready.
-        Your everyday payment services will appear here.
-      </p>
-
-      <div class="dashboard-status">
-        <span></span>
-        Dashboard ready
-      </div>
-
-    </section>
+            </div>
 
 
-    <section class="dashboard-preview">
+            <!-- HEADER ACTIONS -->
 
-      <div class="preview-header">
-        <span>My NovaPay</span>
-        <span class="preview-placeholder">Preview</span>
-      </div>
+            <div class="header-actions">
 
-      <div class="preview-balance">
+                <!-- LIVE SUPPORT -->
 
-        <small>
-          Wallet Balance
-        </small>
-
-        <h2>
-          ₦0.00
-        </h2>
-
-        <p>
-          Your balance will appear here.
-        </p>
-
-      </div>
+                <button
+                    type="button"
+                    class="header-action"
+                    id="supportButton"
+                    aria-label="Live Support"
+                    title="Live Support"
+                >
+                    <span class="header-symbol">
+                        💬
+                    </span>
+                </button>
 
 
-      <div class="preview-services">
+                <!-- DARK MODE -->
 
-        <div>
-          <span>▣</span>
-          <p>Airtime</p>
-        </div>
-
-        <div>
-          <span>◉</span>
-          <p>Data</p>
-        </div>
-
-        <div>
-          <span>ϟ</span>
-          <p>Electricity</p>
-        </div>
-
-        <div>
-          <span>▣</span>
-          <p>TV</p>
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
+                <button
+                    type="button"
+                    class="header-action"
+                    id="themeToggle"
+                    aria-label="Dark Mode"
+                    title="Dark Mode"
+                    aria-pressed="false"
+                >
+                    <span
+                        class="header-symbol theme-symbol"
+                        id="themeIcon"
+                    >
+                        ☾
+                    </span>
+                </button>
 
 
-  <footer class="dashboard-footer">
+                <!-- NOTIFICATIONS -->
 
-    <p>
-      © 2026 NovaPay. All rights reserved.
-    </p>
+                <button
+                    type="button"
+                    class="header-action notification-action"
+                    id="notificationButton"
+                    aria-label="Notifications"
+                    title="Notifications"
+                >
+                    <span class="header-symbol">
+                        🔔
+                    </span>
 
-  </footer>
+                    <span
+                        class="notification-badge"
+                        id="notificationBadge"
+                        hidden
+                    >
+                        0
+                    </span>
+                </button>
+
+            </div>
+
+        </header>
 
 
-  <script src="dashboard.js"></script>
+        <!-- =========================================
+             MAIN CONTENT
+        ========================================== -->
+
+        <main class="dashboard-content">
+
+
+            <!-- =====================================
+                 WALLET / BALANCE
+            ====================================== -->
+
+            <section class="wallet-card">
+
+                <div class="wallet-card-top">
+
+                    <div class="balance-label">
+
+                        <span class="balance-symbol">
+                            ◆
+                        </span>
+
+                        <span>
+                            Balance
+                        </span>
+
+                        <button
+                            type="button"
+                            class="balance-eye"
+                            id="balanceToggle"
+                            aria-label="Show or hide balance"
+                            aria-pressed="false"
+                        >
+                            ●
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="history-button"
+                        id="historyButton"
+                    >
+                        <span>
+                            History
+                        </span>
+
+                        <span class="history-arrow">
+                            ›
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <div class="wallet-card-bottom">
+
+                    <div
+                        class="wallet-balance"
+                        id="walletBalance"
+                    >
+                        ₦0.00
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="add-money-button"
+                        id="addMoneyButton"
+                    >
+                        <span class="plus">
+                            +
+                        </span>
+
+                        <span>
+                            Add Money
+                        </span>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 RECENT TRANSACTIONS
+
+                 Hidden when there are no transactions.
+                 dashboard.js will show it only when
+                 real transaction data exists.
+            ====================================== -->
+
+            <section
+                class="transactions-section"
+                id="transactionsSection"
+                hidden
+            >
+
+                <div class="section-header">
+
+                    <h2>
+                        Recent Transactions
+                    </h2>
+
+                    <button
+                        type="button"
+                        class="see-all"
+                        id="seeAllTransactions"
+                    >
+                        <span>
+                            See all
+                        </span>
+
+                        <span>
+                            ›
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="transactions-card"
+                    id="transactionsContainer"
+                ></div>
+
+            </section>
+
+
+            <!-- =====================================
+                 QUICK SERVICES
+            ====================================== -->
+
+            <section class="services-section">
+
+                <div class="section-header">
+
+                    <h2>
+                        Quick Services
+                    </h2>
+
+                    <button
+                        type="button"
+                        class="see-all"
+                        id="moreServicesButton"
+                    >
+                        <span>
+                            See all
+                        </span>
+
+                        <span>
+                            ›
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <div class="services-card">
+
+
+                    <!-- AIRTIME -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="airtime"
+                        aria-label="Airtime"
+                    >
+
+                        <span class="service-icon">
+                            ☎
+                        </span>
+
+                        <span class="service-name">
+                            Airtime
+                        </span>
+
+                    </button>
+
+
+                    <!-- DATA -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="data"
+                        aria-label="Data"
+                    >
+
+                        <span class="service-icon">
+                            ◉
+                        </span>
+
+                        <span class="service-name">
+                            Data
+                        </span>
+
+                    </button>
+
+
+                    <!-- ELECTRICITY -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="electricity"
+                        aria-label="Electricity"
+                    >
+
+                        <span class="service-icon">
+                            ◇
+                        </span>
+
+                        <span class="service-name">
+                            Electricity
+                        </span>
+
+                    </button>
+
+
+                    <!-- TV -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="tv"
+                        aria-label="TV"
+                    >
+
+                        <span class="service-icon">
+                            ▣
+                        </span>
+
+                        <span class="service-name">
+                            TV
+                        </span>
+
+                    </button>
+
+
+                    <!-- BETTING -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="betting"
+                        aria-label="Betting"
+                    >
+
+                        <span class="service-icon">
+                            ⚽
+                        </span>
+
+                        <span class="service-name">
+                            Betting
+                        </span>
+
+                    </button>
+
+
+                    <!-- RESELL -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="resell"
+                        aria-label="Resell"
+                    >
+
+                        <span class="service-icon">
+                            ▱
+                        </span>
+
+                        <span class="service-name">
+                            Resell
+                        </span>
+
+                    </button>
+
+
+                    <!-- MORE -->
+
+                    <button
+                        type="button"
+                        class="service"
+                        data-service="more"
+                        aria-label="More services"
+                    >
+
+                        <span class="service-icon more-icon">
+                            •••
+                        </span>
+
+                        <span class="service-name">
+                            More
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =========================================
+             BOTTOM NAVIGATION
+        ========================================== -->
+
+        <nav
+            class="bottom-navigation"
+            aria-label="Main navigation"
+        >
+
+            <!-- HOME -->
+
+            <button
+                type="button"
+                class="bottom-nav-item active"
+                data-page="home"
+                aria-label="Home"
+            >
+
+                <span class="bottom-nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Home
+                </span>
+
+            </button>
+
+
+            <!-- CARDS -->
+
+            <button
+                type="button"
+                class="bottom-nav-item"
+                data-page="cards"
+                aria-label="Cards"
+            >
+
+                <span class="bottom-nav-icon">
+                    ▣
+                </span>
+
+                <span>
+                    Cards
+                </span>
+
+            </button>
+
+
+            <!-- POINTS -->
+
+            <button
+                type="button"
+                class="bottom-nav-item"
+                data-page="points"
+                aria-label="Points"
+            >
+
+                <span class="bottom-nav-icon">
+                    ♢
+                </span>
+
+                <span>
+                    Points
+                </span>
+
+            </button>
+
+
+            <!-- PROFILE -->
+
+            <button
+                type="button"
+                class="bottom-nav-item"
+                data-page="profile"
+                aria-label="Profile"
+            >
+
+                <span class="bottom-nav-icon">
+                    ◯
+                </span>
+
+                <span>
+                    Profile
+                </span>
+
+            </button>
+
+        </nav>
+
+    </div>
+
+
+    <!-- =========================================
+         DASHBOARD JAVASCRIPT
+    ========================================== -->
+
+    <script
+        type="module"
+        src="dashboard.js"
+    ></script>
 
 </body>
 </html>

@@ -1,0 +1,1003 @@
+/* =========================================================
+   NOVAPAY DASHBOARD
+   FINAL CLEAN DESIGN
+========================================================= */
+
+:root {
+    --novapay-green: #20D995;
+    --novapay-green-dark: #071A13;
+    --novapay-bg: #020B08;
+    --novapay-card: #081611;
+    --novapay-border: rgba(32, 217, 149, 0.14);
+
+    --white: #F5F8F6;
+    --muted: #8A9691;
+    --dark-text: #06120D;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+html {
+    min-height: 100%;
+    background: var(--novapay-bg);
+}
+
+
+body {
+    min-height: 100vh;
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(32, 217, 149, 0.08),
+            transparent 35%
+        ),
+        var(--novapay-bg);
+
+    color: var(--white);
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+
+    overflow-x: hidden;
+}
+
+
+button {
+    font: inherit;
+    border: 0;
+    cursor: pointer;
+}
+
+
+button:focus-visible {
+    outline: 2px solid var(--novapay-green);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.novapay-dashboard {
+    width: 100%;
+    min-height: 100vh;
+
+    padding:
+        28px
+        24px
+        110px;
+
+    overflow-x: hidden;
+}
+
+
+.dashboard-content {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.dashboard-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 28px;
+}
+
+
+.profile-greeting {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.profile-avatar {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--novapay-green);
+    color: var(--dark-text);
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+
+.greeting {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 25px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+.greeting span {
+    flex-shrink: 0;
+}
+
+
+.greeting strong {
+    min-width: 0;
+    max-width: 160px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   HEADER BUTTONS
+========================================================= */
+
+.header-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.header-action {
+    position: relative;
+
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border: 1px solid var(--novapay-border);
+
+    background: rgba(8, 22, 17, 0.92);
+
+    color: var(--novapay-green);
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease;
+}
+
+
+.header-action:active {
+    transform: scale(0.91);
+
+    background: var(--novapay-green-dark);
+}
+
+
+.header-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    line-height: 1;
+}
+
+
+.theme-symbol {
+    color: var(--novapay-green);
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+========================================================= */
+
+.notification-badge {
+    position: absolute;
+
+    top: -3px;
+    right: -3px;
+
+    min-width: 15px;
+    height: 15px;
+
+    padding: 0 3px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--novapay-green);
+    color: var(--dark-text);
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   WALLET CARD
+========================================================= */
+
+.wallet-card {
+    width: 100%;
+
+    padding: 25px 28px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #20D995,
+            #18C98B
+        );
+
+    color: var(--dark-text);
+
+    box-shadow:
+        0 12px 30px
+        rgba(32, 217, 149, 0.08);
+}
+
+
+.wallet-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.balance-label {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.balance-symbol {
+    font-size: 20px;
+}
+
+
+.balance-eye {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    color: var(--dark-text);
+
+    font-size: 13px;
+}
+
+
+.history-button {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    background: transparent;
+
+    color: var(--dark-text);
+
+    font-size: 18px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.history-arrow {
+    font-size: 27px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   WALLET BALANCE
+========================================================= */
+
+.wallet-card-bottom {
+    margin-top: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.wallet-balance {
+    font-size: 39px;
+
+    /* Lighter than before */
+    font-weight: 600;
+
+    letter-spacing: -1px;
+
+    white-space: nowrap;
+}
+
+
+.add-money-button {
+    min-width: 190px;
+
+    padding: 17px 23px;
+
+    border-radius: 35px;
+
+    background: #10241D;
+
+    color: var(--novapay-green);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.add-money-button:active {
+    transform: scale(0.97);
+}
+
+
+.plus {
+    font-size: 23px;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.transactions-section,
+.services-section {
+    width: 100%;
+
+    margin-top: 34px;
+}
+
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 17px;
+}
+
+
+.section-header h2 {
+    font-size: 25px;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+
+.see-all {
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+
+    background: transparent;
+
+    color: var(--novapay-green);
+
+    font-size: 18px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+/*
+   This section is hidden by HTML when there are
+   no transactions.
+
+   When JavaScript supplies real transactions,
+   the section can be displayed.
+*/
+
+.transactions-section[hidden] {
+    display: none !important;
+}
+
+
+.transactions-card {
+    width: 100%;
+
+    padding: 20px;
+
+    border-radius: 26px;
+
+    border: 1px solid var(--novapay-border);
+
+    background: rgba(8, 22, 17, 0.72);
+}
+
+
+/* Individual transaction */
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid
+        rgba(32, 217, 149, 0.08);
+}
+
+
+.transaction-item:last-child {
+    border-bottom: 0;
+}
+
+
+.transaction-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(32, 217, 149, 0.08);
+
+    color: var(--novapay-green);
+
+    font-size: 21px;
+}
+
+
+.transaction-details {
+    min-width: 0;
+    flex: 1;
+}
+
+
+.transaction-name {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 16px;
+    font-weight: 650;
+}
+
+
+.transaction-date {
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+
+.transaction-right {
+    flex-shrink: 0;
+
+    text-align: right;
+}
+
+
+.transaction-amount {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.transaction-status {
+    margin-top: 4px;
+
+    color: var(--novapay-green);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   QUICK SERVICES
+========================================================= */
+
+.services-card {
+    width: 100%;
+
+    padding: 30px 20px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 28px 10px;
+
+    border-radius: 26px;
+
+    border: 1px solid var(--novapay-border);
+
+    background: rgba(8, 22, 17, 0.72);
+}
+
+
+.service {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 10px;
+
+    background: transparent;
+
+    color: var(--white);
+}
+
+
+.service-icon {
+    width: 66px;
+    height: 66px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border: 1px solid var(--novapay-border);
+
+    background: rgba(2, 11, 8, 0.65);
+
+    color: var(--novapay-green);
+
+    font-size: 29px;
+}
+
+
+.service-name {
+    max-width: 100%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 17px;
+    font-weight: 650;
+}
+
+
+.service:active .service-icon {
+    transform: scale(0.94);
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-navigation {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 100;
+
+    height: 88px;
+
+    padding:
+        9px
+        20px
+        env(safe-area-inset-bottom);
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    border-top: 1px solid var(--novapay-border);
+
+    background:
+        rgba(2, 11, 8, 0.96);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    background: transparent;
+
+    color: #78827E;
+
+    font-size: 15px;
+    font-weight: 650;
+}
+
+
+.bottom-nav-icon {
+    font-size: 26px;
+    line-height: 1;
+}
+
+
+.bottom-nav-item.active {
+    color: var(--novapay-green);
+}
+
+
+.bottom-nav-item:active {
+    transform: scale(0.94);
+}
+
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+body.light-mode {
+    background: #F3F8F5;
+    color: #102019;
+}
+
+
+body.light-mode .novapay-dashboard {
+    background: #F3F8F5;
+}
+
+
+body.light-mode .transactions-card,
+body.light-mode .services-card {
+    background: #FFFFFF;
+
+    border-color:
+        rgba(0, 0, 0, 0.08);
+}
+
+
+body.light-mode .header-action {
+    background: #FFFFFF;
+}
+
+
+body.light-mode .bottom-navigation {
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    border-color:
+        rgba(0, 0, 0, 0.08);
+}
+
+
+body.light-mode .service {
+    color: #102019;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .novapay-dashboard {
+        padding:
+            22px
+            18px
+            105px;
+    }
+
+
+    .dashboard-header {
+        margin-bottom: 24px;
+    }
+
+
+    .profile-avatar {
+        width: 52px;
+        height: 52px;
+
+        font-size: 22px;
+    }
+
+
+    .greeting {
+        font-size: 21px;
+    }
+
+
+    .greeting strong {
+        max-width: 130px;
+    }
+
+
+    .header-actions {
+        gap: 4px;
+    }
+
+
+    .header-action {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    .header-symbol {
+        font-size: 15px;
+    }
+
+
+    .theme-symbol {
+        font-size: 17px;
+    }
+
+
+    .wallet-card {
+        padding: 22px 20px;
+
+        border-radius: 25px;
+    }
+
+
+    .balance-label {
+        font-size: 17px;
+    }
+
+
+    .history-button {
+        font-size: 16px;
+    }
+
+
+    .wallet-card-bottom {
+        gap: 15px;
+    }
+
+
+    .wallet-balance {
+        font-size: 37px;
+        font-weight: 600;
+        letter-spacing: -1px;
+    }
+
+
+    .add-money-button {
+        min-width: 0;
+
+        padding: 15px 18px;
+
+        font-size: 15px;
+    }
+
+
+    .section-header h2 {
+        font-size: 22px;
+    }
+
+
+    .see-all {
+        font-size: 16px;
+    }
+
+
+    .transactions-card {
+        padding: 15px;
+    }
+
+
+    .services-card {
+        padding: 25px 12px;
+
+        gap: 27px 5px;
+    }
+
+
+    .service-icon {
+        width: 58px;
+        height: 58px;
+
+        font-size: 25px;
+    }
+
+
+    .service-name {
+        font-size: 15px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+    .novapay-dashboard {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+
+    .profile-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+
+    .greeting {
+        font-size: 19px;
+    }
+
+
+    .greeting strong {
+        max-width: 105px;
+    }
+
+
+    .header-action {
+        width: 31px;
+        height: 31px;
+    }
+
+
+    .wallet-card {
+        padding-left: 17px;
+        padding-right: 17px;
+    }
+
+
+    .wallet-card-top {
+        gap: 7px;
+    }
+
+
+    .balance-label {
+        font-size: 16px;
+    }
+
+
+    .history-button {
+        font-size: 15px;
+    }
+
+
+    .wallet-card-bottom {
+        gap: 10px;
+    }
+
+
+    .wallet-balance {
+        font-size: 34px;
+        font-weight: 600;
+    }
+
+
+    .add-money-button {
+        padding: 13px 14px;
+
+        font-size: 14px;
+    }
+
+
+    .services-card {
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+
+    .service-icon {
+        width: 52px;
+        height: 52px;
+    }
+
+
+    .service-name {
+        font-size: 14px;
+    }
+}

@@ -1,6 +1,5 @@
 import { auth } from "./firebase.js";
 
-
 /* =========================================================
    NOVAPAY API
 ========================================================= */
@@ -10,7 +9,7 @@ const API_BASE_URL =
 
 
 /* =========================================================
-   ELEMENTS
+   PAGE ELEMENTS
 ========================================================= */
 
 const amountInput =
@@ -33,40 +32,90 @@ const emailError =
 
 
 /* =========================================================
+   PAYMENT LIMITS
+========================================================= */
+
+const MIN_AMOUNT_NAIRA = 50;
+
+const MAX_AMOUNT_NAIRA = 1000000;
+
+
+/* =========================================================
    HELPERS
 ========================================================= */
 
-function showError(
-    element,
-    message
-) {
+function showError(element, message) {
+
     if (!element) return;
 
-    element.textContent =
-        message;
+    element.textContent = message;
 
-    element.hidden =
-        false;
+    element.hidden = false;
 }
 
 
-function clearError(
-    element
-) {
+function clearError(element) {
+
     if (!element) return;
 
-    element.textContent =
-        "";
+    element.textContent = "";
 
-    element.hidden =
-        true;
+    element.hidden = true;
 }
 
 
-function showPaymentMessage(
-    message
-) {
+function showMessage(message) {
+
     alert(message);
+}
+
+
+/* =========================================================
+   CURRENT USER
+========================================================= */
+
+async function getCurrentUser() {
+
+    if (auth.currentUser) {
+
+        return auth.currentUser;
+    }
+
+
+    return new Promise((resolve) => {
+
+        let finished = false;
+
+
+        const unsubscribe =
+            auth.onAuthStateChanged(
+                (user) => {
+
+                    if (finished) return;
+
+                    finished = true;
+
+                    unsubscribe();
+
+                    resolve(user);
+                }
+            );
+
+
+        setTimeout(() => {
+
+            if (finished) return;
+
+            finished = true;
+
+            unsubscribe();
+
+            resolve(
+                auth.currentUser
+            );
+
+        }, 10000);
+    });
 }
 
 
@@ -82,10 +131,8 @@ if (backButton) {
 
             window.location.href =
                 "dashboard.html";
-
         }
     );
-
 }
 
 
@@ -101,312 +148,40 @@ const urlParams =
 
 const callbackReference =
     String(
-        urlParams.get("reference") || ""
+        urlParams.get("reference") ||
+        urlParams.get("trxref") ||
+        ""
     ).trim();
 
 
 /* =========================================================
-   WAIT FOR FIREBASE AUTH
+   AMOUNT VALIDATION
 ========================================================= */
-
-async function waitForAuthenticatedUser() {
-
-    let attempts = 0;
-
-    while (
-        !auth.currentUser &&
-        attempts < 20
-    ) {
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    500
-                )
-        );
-
-        attempts++;
-    }
-
-    return auth.currentUser;
-}
-
-
-/* =========================================================
-   VERIFY PAYSTACK PAYMENT
-========================================================= */
-
-async function handlePaystackCallback() {
-
-    if (!callbackReference) {
-        return false;
-    }
-
-
-    console.log(
-        "NovaPay: Paystack callback detected:",
-        callbackReference
-    );
-
-
-    const user =
-        await waitForAuthenticatedUser();
-
-
-    if (!user) {
-
-        showPaymentMessage(
-            "Your NovaPay session has expired. Please log in again."
-        );
-
-        window.location.href =
-            "login.html";
-
-        return true;
-    }
-
-
-    try {
-
-        /*
-           Get a fresh Firebase ID token.
-
-           The backend uses this token to confirm that
-           the logged-in NovaPay user owns this payment.
-        */
-
-        const idToken =
-            await user.getIdToken(
-                true
-            );
-
-
-        console.log(
-            "NovaPay: Verifying payment with backend..."
-        );
-
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/api/payments/verify/${encodeURIComponent(
-                    callbackReference
-                )}`,
-                {
-                    method:
-                        "GET",
-
-                    headers: {
-                        "Authorization":
-                            `Bearer ${idToken}`
-                    }
-                }
-            );
-
-
-        const responseText =
-            await response.text();
-
-
-        console.log(
-            "NovaPay verification status:",
-            response.status
-        );
-
-
-        console.log(
-            "NovaPay verification response:",
-            responseText
-        );
-
-
-        let result;
-
-        try {
-
-            result =
-                JSON.parse(
-                    responseText
-                );
-
-        } catch (error) {
-
-            throw new Error(
-                "The payment server returned an invalid response."
-            );
-
-        }
-
-
-        /*
-           The backend is the source of truth.
-
-           Do not credit the wallet in this browser.
-        */
-
-        if (
-            !response.ok ||
-            !result.success
-        ) {
-
-            throw new Error(
-                result.message ||
-                "Payment verification failed."
-            );
-
-        }
-
-
-        console.log(
-            "NovaPay: Payment verification result:",
-            result
-        );
-
-
-        /*
-           IMPORTANT:
-
-           The server can return:
-
-           status = credited
-
-           This means the wallet was credited successfully.
-
-           It can also return alreadyCredited when the
-           Paystack webhook credited it first.
-
-           Both are successful outcomes.
-        */
-
-        if (
-            result.status ===
-                "credited"
-        ) {
-
-            showPaymentMessage(
-                "Payment confirmed successfully. Your wallet has been credited."
-            );
-
-        } else {
-
-            /*
-               Do not tell the user that money was credited
-               if the server has not confirmed it.
-            */
-
-            throw new Error(
-                result.message ||
-                "Payment has not been confirmed yet. Please check your wallet shortly."
-            );
-
-        }
-
-
-        /*
-           Remove the Paystack reference from the URL
-           before returning to the dashboard.
-        */
-
-        window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
-        );
-
-
-        /*
-           Clear the locally stored pending reference.
-        */
-
-        sessionStorage.removeItem(
-            "novapayPendingPaymentReference"
-        );
-
-
-        /*
-           Return to dashboard only after the backend
-           has confirmed the payment.
-        */
-
-        window.location.href =
-            "dashboard.html";
-
-
-        return true;
-
-
-    } catch (error) {
-
-        console.error(
-            "NovaPay payment verification error:",
-            error
-        );
-
-
-        showPaymentMessage(
-            error.message ||
-            "We could not verify your payment. Please contact support before trying again."
-        );
-
-
-        return true;
-
-    }
-
-}
-
-
-/* =========================================================
-   CHECK CALLBACK FIRST
-========================================================= */
-
-if (callbackReference) {
-
-    handlePaystackCallback();
-
-}
-
-
-/* =========================================================
-   GET AMOUNT IN NAIRA
-========================================================= */
-
-/*
-   IMPORTANT:
-
-   The backend currently expects the amount in NAIRA.
-
-   Example:
-
-   User enters:
-       500
-
-   This function returns:
-       500
-
-   NOT:
-       50000
-
-   The server is responsible for converting
-   500 NGN into 50,000 kobo.
-*/
 
 function getAmountInNaira() {
 
-    const rawAmount =
+    const raw =
         String(
             amountInput?.value || ""
         ).trim();
 
 
-    const amount =
-        Number(
-            rawAmount
+    if (!raw) {
+
+        showError(
+            amountError,
+            "Enter a valid amount."
         );
+
+        return null;
+    }
+
+
+    const amount =
+        Number(raw);
 
 
     if (
-        !rawAmount ||
         !Number.isFinite(amount) ||
         amount <= 0
     ) {
@@ -417,46 +192,46 @@ function getAmountInNaira() {
         );
 
         return null;
-
-    }
-
-
-    if (
-        amount < 100
-    ) {
-
-        showError(
-            amountError,
-            "Minimum amount is ₦100."
-        );
-
-        return null;
-
-    }
-
-
-    if (
-        amount > 10000000
-    ) {
-
-        showError(
-            amountError,
-            "Amount is too large."
-        );
-
-        return null;
-
     }
 
 
     /*
-       Only allow two decimal places.
-    */
+     * IMPORTANT:
+     * NovaPay minimum is ₦50.
+     */
 
     if (
-        Math.round(
-            amount * 100
-        ) !==
+        amount < MIN_AMOUNT_NAIRA
+    ) {
+
+        showError(
+            amountError,
+            "Minimum amount is ₦50."
+        );
+
+        return null;
+    }
+
+
+    if (
+        amount > MAX_AMOUNT_NAIRA
+    ) {
+
+        showError(
+            amountError,
+            "Maximum amount is ₦1,000,000."
+        );
+
+        return null;
+    }
+
+
+    /*
+     * Maximum two decimal places.
+     */
+
+    if (
+        Math.round(amount * 100) !==
         amount * 100
     ) {
 
@@ -466,24 +241,20 @@ function getAmountInNaira() {
         );
 
         return null;
-
     }
 
 
-    clearError(
-        amountError
-    );
+    clearError(amountError);
 
 
     return Number(
         amount.toFixed(2)
     );
-
 }
 
 
 /* =========================================================
-   VALIDATE EMAIL
+   EMAIL VALIDATION
 ========================================================= */
 
 function getPaymentEmail() {
@@ -504,7 +275,6 @@ function getPaymentEmail() {
         );
 
         return null;
-
     }
 
 
@@ -513,9 +283,7 @@ function getPaymentEmail() {
 
 
     if (
-        !emailPattern.test(
-            email
-        )
+        !emailPattern.test(email)
     ) {
 
         showError(
@@ -524,17 +292,208 @@ function getPaymentEmail() {
         );
 
         return null;
-
     }
 
 
-    clearError(
-        emailError
-    );
+    clearError(emailError);
 
 
     return email;
+}
 
+
+/* =========================================================
+   VERIFY PAYMENT
+========================================================= */
+
+async function verifyPayment(
+    reference
+) {
+
+    const user =
+        await getCurrentUser();
+
+
+    if (!user) {
+
+        showMessage(
+            "Your NovaPay session has expired. Please log in again."
+        );
+
+
+        window.location.href =
+            "login.html";
+
+
+        return;
+    }
+
+
+    try {
+
+        const idToken =
+            await user.getIdToken(true);
+
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/payments/verify/${encodeURIComponent(reference)}`,
+                {
+                    method: "GET",
+
+                    cache: "no-store",
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${idToken}`
+                    }
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        let result;
+
+
+        try {
+
+            result =
+                JSON.parse(text);
+
+        } catch {
+
+            throw new Error(
+                "The payment server returned an invalid response."
+            );
+        }
+
+
+        console.log(
+            "NovaPay payment verification:",
+            result
+        );
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Payment verification failed."
+            );
+        }
+
+
+        /*
+         * Only the backend can confirm
+         * that the payment was actually credited.
+         */
+
+        if (
+            result.status !==
+            "credited"
+        ) {
+
+            throw new Error(
+                "Payment has not been confirmed yet."
+            );
+        }
+
+
+        sessionStorage.removeItem(
+            "novapayPendingPaymentReference"
+        );
+
+
+        /*
+         * Remove Paystack reference
+         * from the browser URL.
+         */
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+
+        showMessage(
+            "Payment confirmed successfully. Your wallet has been credited."
+        );
+
+
+        /*
+         * Dashboard will fetch the fresh
+         * Firestore balance from the backend.
+         */
+
+        window.location.replace(
+            "dashboard.html"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "NovaPay payment verification error:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "We could not verify your payment. Please try again."
+        );
+
+
+        if (continueButton) {
+
+            continueButton.disabled =
+                false;
+
+            continueButton.textContent =
+                "Continue";
+        }
+    }
+}
+
+
+/* =========================================================
+   HANDLE PAYSTACK CALLBACK
+========================================================= */
+
+async function handleCallback() {
+
+    if (!callbackReference) {
+
+        return;
+    }
+
+
+    console.log(
+        "NovaPay Paystack callback:",
+        callbackReference
+    );
+
+
+    if (continueButton) {
+
+        continueButton.disabled =
+            true;
+
+        continueButton.textContent =
+            "Verifying payment...";
+    }
+
+
+    await verifyPayment(
+        callbackReference
+    );
 }
 
 
@@ -544,25 +503,10 @@ function getPaymentEmail() {
 
 async function startPayment() {
 
-    clearError(
-        amountError
-    );
+    clearError(amountError);
 
-    clearError(
-        emailError
-    );
+    clearError(emailError);
 
-
-    /*
-       IMPORTANT:
-
-       Keep this as NAIRA.
-
-       If user enters ₦500,
-       amountNaira = 500.
-
-       The backend converts it to 50,000 kobo.
-    */
 
     const amountNaira =
         getAmountInNaira();
@@ -571,6 +515,7 @@ async function startPayment() {
     if (
         amountNaira === null
     ) {
+
         return;
     }
 
@@ -580,21 +525,18 @@ async function startPayment() {
 
 
     if (!email) {
+
         return;
     }
 
 
-    /*
-       Make sure Firebase authentication exists.
-    */
-
     const user =
-        await waitForAuthenticatedUser();
+        await getCurrentUser();
 
 
     if (!user) {
 
-        showPaymentMessage(
+        showMessage(
             "Please log in before adding money."
         );
 
@@ -604,7 +546,6 @@ async function startPayment() {
 
 
         return;
-
     }
 
 
@@ -613,79 +554,55 @@ async function startPayment() {
         continueButton.disabled =
             true;
 
-    }
-
-
-    const originalButtonText =
-        continueButton?.textContent ||
-        "Continue";
-
-
-    if (continueButton) {
-
         continueButton.textContent =
             "Starting payment...";
-
     }
 
 
     try {
 
-        /*
-           Get Firebase ID token.
-
-           This identifies the authenticated NovaPay
-           account to the backend.
-        */
-
         const idToken =
-            await user.getIdToken(
-                true
-            );
+            await user.getIdToken(true);
 
 
         console.log(
-            "NovaPay: Initializing Paystack payment..."
-        );
-
-
-        console.log(
-            "NovaPay amount being sent to backend:",
+            "NovaPay amount:",
             amountNaira,
             "NGN"
         );
 
 
         /*
-           IMPORTANT:
-
-           Send NAIRA here.
-
-           Do NOT multiply by 100.
-
-           The backend already performs:
-
-               amountKobo = amountNumber * 100
-        */
+         * IMPORTANT:
+         *
+         * ₦500 is sent as 500.
+         *
+         * The backend converts it to:
+         *
+         * 500 × 100 = 50,000 kobo
+         */
 
         const response =
             await fetch(
                 `${API_BASE_URL}/api/payments/initialize`,
                 {
-                    method:
-                        "POST",
+                    method: "POST",
+
+                    cache: "no-store",
 
                     headers: {
+
                         "Content-Type":
                             "application/json",
 
-                        "Authorization":
+                        Authorization:
                             `Bearer ${idToken}`
                     },
 
                     body:
                         JSON.stringify({
-                            amount:
+
+                            amountNaira:
                                 amountNaira,
 
                             email:
@@ -695,38 +612,30 @@ async function startPayment() {
             );
 
 
-        const responseText =
+        const text =
             await response.text();
-
-
-        console.log(
-            "NovaPay initialization HTTP status:",
-            response.status
-        );
-
-
-        console.log(
-            "NovaPay initialization response:",
-            responseText
-        );
 
 
         let result;
 
+
         try {
 
             result =
-                JSON.parse(
-                    responseText
-                );
+                JSON.parse(text);
 
-        } catch (error) {
+        } catch {
 
             throw new Error(
                 "The payment server returned an invalid response."
             );
-
         }
+
+
+        console.log(
+            "NovaPay payment initialization:",
+            result
+        );
 
 
         if (
@@ -738,7 +647,6 @@ async function startPayment() {
                 result.message ||
                 "Unable to start payment."
             );
-
         }
 
 
@@ -756,37 +664,25 @@ async function startPayment() {
             ).trim();
 
 
-        /*
-           Paystack must return a checkout URL.
-        */
-
         if (!authorizationUrl) {
 
             throw new Error(
                 "Paystack did not return a payment URL."
             );
-
         }
 
-
-        /*
-           Paystack must return a payment reference.
-        */
 
         if (!reference) {
 
             throw new Error(
                 "Paystack did not return a payment reference."
             );
-
         }
 
 
         /*
-           Save reference locally only for recovery/debugging.
-
-           The backend remains the source of truth.
-        */
+         * Store only the payment reference.
+         */
 
         sessionStorage.setItem(
             "novapayPendingPaymentReference",
@@ -801,12 +697,11 @@ async function startPayment() {
 
 
         /*
-           Redirect to Paystack checkout.
-        */
+         * Redirect to Paystack.
+         */
 
         window.location.href =
             authorizationUrl;
-
 
     } catch (error) {
 
@@ -816,7 +711,7 @@ async function startPayment() {
         );
 
 
-        showPaymentMessage(
+        showMessage(
             error.message ||
             "Unable to start payment. Please try again."
         );
@@ -827,14 +722,10 @@ async function startPayment() {
             continueButton.disabled =
                 false;
 
-
             continueButton.textContent =
-                originalButtonText;
-
+                "Continue";
         }
-
     }
-
 }
 
 
@@ -848,12 +739,11 @@ if (continueButton) {
         "click",
         startPayment
     );
-
 }
 
 
 /* =========================================================
-   AMOUNT INPUT CLEANUP
+   INPUT CLEANUP
 ========================================================= */
 
 if (amountInput) {
@@ -865,16 +755,10 @@ if (amountInput) {
             clearError(
                 amountError
             );
-
         }
     );
-
 }
 
-
-/* =========================================================
-   EMAIL INPUT CLEANUP
-========================================================= */
 
 if (emailInput) {
 
@@ -885,15 +769,13 @@ if (emailInput) {
             clearError(
                 emailError
             );
-
         }
     );
-
 }
 
 
 /* =========================================================
-   INITIAL PAGE STATE
+   INITIALIZE PAGE
 ========================================================= */
 
 document.addEventListener(
@@ -905,17 +787,26 @@ document.addEventListener(
             continueButton.disabled =
                 false;
 
+            continueButton.textContent =
+                "Continue";
         }
 
 
-        if (!callbackReference) {
+        /*
+         * If Paystack redirected back
+         * with a reference, verify it.
+         */
+
+        if (callbackReference) {
+
+            handleCallback();
+
+        } else {
 
             console.log(
-                "NovaPay: Add Money page ready."
+                "NovaPay Add Money page ready."
             );
-
         }
-
     }
 );
 
@@ -929,12 +820,12 @@ window.addEventListener(
     () => {
 
         /*
-           Do not interfere with a payment callback.
-        */
+         * Do not reset the button while
+         * payment verification is running.
+         */
 
-        if (
-            callbackReference
-        ) {
+        if (callbackReference) {
+
             return;
         }
 
@@ -944,20 +835,22 @@ window.addEventListener(
             continueButton.disabled =
                 false;
 
+            continueButton.textContent =
+                "Continue";
         }
-
     }
 );
 
 
 /* =========================================================
-   DEBUG EXPORT
+   DEBUG ACCESS
 ========================================================= */
 
 window.novaPayPayment = {
 
     startPayment,
 
-    handlePaystackCallback
+    verifyPayment,
 
+    handleCallback
 };

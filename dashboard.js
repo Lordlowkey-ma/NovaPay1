@@ -17,13 +17,6 @@ import {
 const API_BASE_URL =
     "https://novapay-backend-1.onrender.com";
 
-
-/*
-   This is the dashboard endpoint.
-
-   If your backend uses a different route, we will change
-   ONLY this line after checking the backend.
-*/
 const DASHBOARD_ENDPOINT =
     `${API_BASE_URL}/api/dashboard`;
 
@@ -115,7 +108,8 @@ function getSavedUser() {
     } catch (error) {
 
         console.warn(
-            "NovaPay: saved user profile could not be read."
+            "NovaPay saved user could not be read.",
+            error
         );
 
         return null;
@@ -162,7 +156,8 @@ function displayUser(firebaseUser) {
             username
                 .trim()
                 .charAt(0)
-                .toUpperCase() || "N";
+                .toUpperCase() ||
+            "N";
     }
 }
 
@@ -238,6 +233,10 @@ function setBalance(amount) {
     renderBalance();
 }
 
+
+/* =========================================================
+   BALANCE TOGGLE
+========================================================= */
 
 balanceToggle?.addEventListener(
     "click",
@@ -386,11 +385,6 @@ notificationButton?.addEventListener(
         console.log(
             "NovaPay notifications selected."
         );
-
-        /*
-           Notifications page will be connected
-           when that feature is built.
-        */
     }
 );
 
@@ -406,11 +400,6 @@ supportButton?.addEventListener(
         console.log(
             "NovaPay Live Support selected."
         );
-
-        /*
-           Live Support will be connected
-           when that feature is built.
-        */
     }
 );
 
@@ -525,7 +514,9 @@ bottomNavigation.forEach(
                 );
 
 
-                if (page === "profile") {
+                if (
+                    page === "profile"
+                ) {
 
                     window.location.href =
                         "profile.html";
@@ -534,7 +525,9 @@ bottomNavigation.forEach(
                 }
 
 
-                if (page === "cards") {
+                if (
+                    page === "cards"
+                ) {
 
                     console.log(
                         "NovaPay Cards selected."
@@ -544,7 +537,9 @@ bottomNavigation.forEach(
                 }
 
 
-                if (page === "points") {
+                if (
+                    page === "points"
+                ) {
 
                     console.log(
                         "NovaPay Points selected."
@@ -564,7 +559,10 @@ bottomNavigation.forEach(
 
 function getTransactionsFromResponse(data) {
 
-    if (Array.isArray(data)) {
+    if (
+        Array.isArray(data)
+    ) {
+
         return data;
     }
 
@@ -574,6 +572,7 @@ function getTransactionsFromResponse(data) {
             data?.transactions
         )
     ) {
+
         return data.transactions;
     }
 
@@ -583,6 +582,7 @@ function getTransactionsFromResponse(data) {
             data?.recentTransactions
         )
     ) {
+
         return data.recentTransactions;
     }
 
@@ -592,6 +592,7 @@ function getTransactionsFromResponse(data) {
             data?.data?.transactions
         )
     ) {
+
         return data.data.transactions;
     }
 
@@ -601,6 +602,7 @@ function getTransactionsFromResponse(data) {
             data?.data?.recentTransactions
         )
     ) {
+
         return data.data.recentTransactions;
     }
 
@@ -620,6 +622,33 @@ function formatTransactionDate(value) {
     }
 
 
+    /*
+       Firestore timestamps can sometimes arrive
+       as objects instead of normal date strings.
+    */
+
+    if (
+        typeof value === "object" &&
+        value !== null &&
+        typeof value.seconds === "number"
+    ) {
+
+        const date =
+            new Date(
+                value.seconds * 1000
+            );
+
+
+        return date.toLocaleString(
+            "en-NG",
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        );
+    }
+
+
     const date =
         new Date(value);
 
@@ -629,6 +658,7 @@ function formatTransactionDate(value) {
             date.getTime()
         )
     ) {
+
         return String(value);
     }
 
@@ -658,28 +688,53 @@ function getTransactionIcon(transaction) {
         ).toLowerCase();
 
 
-    if (type.includes("airtime")) {
+    if (
+        type.includes("airtime")
+    ) {
+
         return "☎";
     }
 
 
-    if (type.includes("data")) {
+    if (
+        type.includes("data")
+    ) {
+
         return "◉";
     }
 
 
-    if (type.includes("electric")) {
+    if (
+        type.includes("electric")
+    ) {
+
         return "◇";
     }
 
 
-    if (type.includes("tv")) {
+    if (
+        type.includes("tv")
+    ) {
+
         return "▣";
     }
 
 
-    if (type.includes("bet")) {
+    if (
+        type.includes("bet")
+    ) {
+
         return "⚽";
+    }
+
+
+    if (
+        type.includes("fund") ||
+        type.includes("deposit") ||
+        type.includes("wallet")
+    ) {
+
+        return "₦";
     }
 
 
@@ -710,23 +765,66 @@ function getTransactionName(transaction) {
 
 function getTransactionAmount(transaction) {
 
-    const amount =
+    let amount =
         Number(
+            transaction?.amountNaira ??
             transaction?.amount ??
             transaction?.value ??
             0
         );
 
 
-    if (!Number.isFinite(amount)) {
+    /*
+       If a transaction only contains Kobo,
+       convert it to Naira.
+    */
+
+    if (
+        (
+            transaction?.amountNaira ===
+            undefined ||
+            transaction?.amountNaira ===
+            null
+        ) &&
+        transaction?.amountKobo !==
+            undefined
+    ) {
+
+        amount =
+            Number(
+                transaction.amountKobo
+            ) / 100;
+    }
+
+
+    if (
+        !Number.isFinite(amount)
+    ) {
+
         return "₦0.00";
     }
 
 
+    const direction =
+        String(
+            transaction?.direction ||
+            ""
+        ).toLowerCase();
+
+
+    const type =
+        String(
+            transaction?.type ||
+            ""
+        ).toLowerCase();
+
+
     const isCredit =
-        transaction?.direction === "credit" ||
-        transaction?.type === "credit" ||
-        transaction?.credit === true;
+        direction === "credit" ||
+        type === "credit" ||
+        transaction?.credit === true ||
+        type.includes("deposit") ||
+        type.includes("fund");
 
 
     const prefix =
@@ -750,23 +848,23 @@ function getTransactionAmount(transaction) {
    RENDER TRANSACTIONS
 ========================================================= */
 
-function renderTransactions(transactions) {
+function renderTransactions(
+    transactions
+) {
 
     if (
         !transactionsSection ||
         !transactionsContainer
     ) {
+
         return;
     }
 
 
-    /*
-       No transactions:
-       completely remove the section.
-    */
-
     if (
-        !Array.isArray(transactions) ||
+        !Array.isArray(
+            transactions
+        ) ||
         transactions.length === 0
     ) {
 
@@ -780,12 +878,11 @@ function renderTransactions(transactions) {
     }
 
 
-    /*
-       Only the latest 2 transactions.
-    */
-
     const latestTwo =
-        transactions.slice(0, 2);
+        transactions.slice(
+            0,
+            2
+        );
 
 
     transactionsContainer.innerHTML =
@@ -798,15 +895,18 @@ function renderTransactions(transactions) {
                             transaction
                         );
 
+
                     const name =
                         getTransactionName(
                             transaction
                         );
 
+
                     const amount =
                         getTransactionAmount(
                             transaction
                         );
+
 
                     const date =
                         formatTransactionDate(
@@ -814,6 +914,7 @@ function renderTransactions(transactions) {
                             transaction?.date ||
                             transaction?.timestamp
                         );
+
 
                     const status =
                         transaction?.status ||
@@ -869,7 +970,9 @@ function renderTransactions(transactions) {
 
 function escapeHtml(value) {
 
-    return String(value ?? "")
+    return String(
+        value ?? ""
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -901,18 +1004,14 @@ async function loadDashboardData(
     firebaseUser
 ) {
 
-    /*
-       Always show the authenticated user
-       immediately.
-    */
-
     displayUser(
         firebaseUser
     );
 
 
     /*
-       Start with a clean dashboard.
+       Start with zero while the fresh
+       server balance is loading.
     */
 
     setBalance(0);
@@ -925,43 +1024,58 @@ async function loadDashboardData(
     try {
 
         /*
-           Firebase ID token proves that the
-           logged-in user is authenticated.
-        */
+         * IMPORTANT:
+         *
+         * Force Firebase to issue a fresh token.
+         */
 
         const idToken =
-            await firebaseUser.getIdToken();
+            await firebaseUser.getIdToken(
+                true
+            );
+
+
+        /*
+         * Add a timestamp so the browser cannot
+         * reuse an old dashboard response.
+         */
+
+        const freshEndpoint =
+            `${DASHBOARD_ENDPOINT}?_=${Date.now()}`;
 
 
         const response =
             await fetch(
-                DASHBOARD_ENDPOINT,
+                freshEndpoint,
                 {
                     method: "GET",
 
+                    cache: "no-store",
+
                     headers: {
+
                         "Authorization":
                             `Bearer ${idToken}`,
 
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+
+                        "Cache-Control":
+                            "no-cache",
+
+                        "Pragma":
+                            "no-cache"
                     }
                 }
             );
 
 
-        /*
-           Do NOT expose server errors to
-           the user.
-
-           The dashboard simply keeps its
-           safe empty state.
-        */
-
-        if (!response.ok) {
+        if (
+            !response.ok
+        ) {
 
             console.warn(
-                "NovaPay dashboard data is not available yet:",
+                "NovaPay dashboard request failed:",
                 response.status
             );
 
@@ -973,16 +1087,38 @@ async function loadDashboardData(
             await response.json();
 
 
+        console.log(
+            "NovaPay fresh dashboard response:",
+            data
+        );
+
+
         /*
-           Balance
-        */
+         * =====================================================
+         * WALLET BALANCE
+         * =====================================================
+         *
+         * The backend now returns:
+         *
+         * {
+         *     balance: ...,
+         *     walletBalance: ...,
+         *     user: {
+         *         walletBalance: ...
+         *     }
+         * }
+         *
+         * walletBalance is preferred because it is the
+         * wallet field returned by the new backend.
+         */
 
         const balance =
-            data?.balance ??
             data?.walletBalance ??
+            data?.balance ??
+            data?.user?.walletBalance ??
             data?.user?.balance ??
-            data?.data?.balance ??
-            data?.data?.walletBalance;
+            data?.data?.walletBalance ??
+            data?.data?.balance;
 
 
         if (
@@ -990,15 +1126,45 @@ async function loadDashboardData(
             balance !== null
         ) {
 
-            setBalance(
-                balance
+            const numericBalance =
+                Number(balance);
+
+
+            if (
+                Number.isFinite(
+                    numericBalance
+                )
+            ) {
+
+                setBalance(
+                    numericBalance
+                );
+
+            } else {
+
+                console.warn(
+                    "NovaPay returned an invalid wallet balance:",
+                    balance
+                );
+
+                setBalance(0);
+            }
+
+        } else {
+
+            console.warn(
+                "NovaPay dashboard response did not contain a wallet balance."
             );
+
+            setBalance(0);
         }
 
 
         /*
-           Notifications
-        */
+         * =====================================================
+         * NOTIFICATIONS
+         * =====================================================
+         */
 
         const notificationCount =
             data?.notificationCount ??
@@ -1014,8 +1180,10 @@ async function loadDashboardData(
 
 
         /*
-           Transactions
-        */
+         * =====================================================
+         * TRANSACTIONS
+         * =====================================================
+         */
 
         const transactions =
             getTransactionsFromResponse(
@@ -1030,17 +1198,15 @@ async function loadDashboardData(
 
     } catch (error) {
 
-        /*
-           Do not show technical errors
-           to the user.
-
-           Keep the dashboard usable.
-        */
-
-        console.warn(
-            "NovaPay dashboard data request failed."
+        console.error(
+            "NovaPay dashboard data request failed:",
+            error
         );
 
+
+        /*
+         * Keep the dashboard usable.
+         */
 
         setBalance(0);
 
@@ -1060,11 +1226,6 @@ onAuthStateChanged(
     async (firebaseUser) => {
 
         if (!firebaseUser) {
-
-            /*
-               No valid Firebase session.
-               Return to login.
-            */
 
             window.location.replace(
                 "login.html"

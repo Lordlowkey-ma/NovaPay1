@@ -1,7 +1,6 @@
 import { auth } from "./firebase.js";
 
-const API_BASE_URL =
-  "https://super-fortnight-vpqvrwpx9x6ghpgj6-3000.app.github.dev";
+const API_BASE_URL = "https://novapay-backend-1.onrender.com";
 
 
 const amountInput =
